@@ -1,0 +1,11 @@
+/* SGD • Novo laudo de liberação */
+.split--drawing { grid-template-columns: 1fr 2fr; }
+.radio { display: flex; gap: .6rem; align-items: center; padding: .7rem 1rem; border: 1px solid var(--line); border-radius: 10px; margin-bottom: .5rem; cursor: pointer; }
+.radio:has(input:checked) { border-color: var(--acc); background: color-mix(in srgb, var(--acc) 12%, transparent); }
+.radio input, .res input, .tbl input[type=checkbox], .tbl input[type=radio] { width: auto; min-height: 0; accent-color: var(--acc); }
+.res { display: flex; gap: 1rem; }
+.res label { display: flex; gap: .3rem; align-items: center; }
+.tbl { min-width: 900px; }
+.tbl th, .tbl td { padding: .5rem .6rem; }
+.tbl input:not([type=radio]):not([type=checkbox]) { padding: .35rem .5rem; min-height: 32px; min-width: 80px; }
+@media (max-width: 900px) { .split--drawing { grid-template-columns: 1fr; } }

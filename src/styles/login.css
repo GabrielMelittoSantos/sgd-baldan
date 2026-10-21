@@ -1,0 +1,349 @@
+/* ==========================================================
+   SGD • Tela de login
+   Variáveis, reset e base vêm do global.css
+   ========================================================== */
+
+html, body { height: 100%; }
+body { background: var(--bg); }
+
+/* ---------- Layout geral ---------- */
+.login {
+  --hero-image: none; /* Troque pela sua imagem: url('img/maquina.jpg') */
+  padding: 0;
+  gap: 0;
+  align-content: normal;
+  display: grid;
+  grid-template-columns: 49.5fr 50.5fr;
+  min-height: 100vh;
+}
+
+/* ==========================================================
+   PAINEL VISUAL
+   ========================================================== */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: #070d18;
+  border-right: 1px solid #1a2638;
+}
+
+/* Fundo da máquina: imagem (se definida) sobre um degradê industrial */
+.hero__machine {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(5,10,19,.55) 0%, rgba(5,10,19,.1) 40%, rgba(5,10,19,.85) 100%),
+    var(--hero-image) center / cover no-repeat,
+    radial-gradient(ellipse 40% 30% at 80% 8%, rgba(70,110,170,.35), transparent 70%),
+    radial-gradient(ellipse 55% 40% at 55% 62%, rgba(120,140,170,.45), transparent 70%),
+    radial-gradient(ellipse 30% 25% at 20% 25%, rgba(40,90,150,.25), transparent 70%),
+    linear-gradient(160deg, #0a1322 0%, #0d1828 45%, #050a13 100%);
+}
+
+/* Formas diagonais vermelhas */
+.hero__shape { position: absolute; display: block; }
+
+.hero__shape--solid {
+  top: 0; left: 0;
+  width: 30%; height: 24%;
+  background: linear-gradient(135deg, #7d0610, #d70f1d 70%, #ff2b3a);
+  clip-path: polygon(50% 0, 100% 0, 38% 100%, 0 100%, 0 78%);
+  opacity: .95;
+}
+
+.hero::before {
+  /* linha vermelha fina diagonal */
+  content: "";
+  position: absolute;
+  left: -3%; top: 31%;
+  width: 2px; height: 52%;
+  background: linear-gradient(180deg, transparent, var(--red) 15%, var(--red));
+  transform: rotate(33deg);
+  transform-origin: top left;
+  opacity: .9;
+}
+
+.hero::after {
+  /* contorno diagonal azul/branco inferior direito */
+  content: "";
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 18%; height: 36%;
+  background: linear-gradient(135deg, transparent 49.5%, rgba(60,130,230,.8) 50%, transparent 50.6%);
+}
+
+/* Slogan */
+.hero__text {
+  position: absolute;
+  left: 4%; bottom: 8%;
+  z-index: 2;
+}
+
+.hero__slogan {
+  font-family: var(--font-title);
+  font-weight: 500;
+  font-size: clamp(1.4rem, 2.6vw, 2.15rem);
+  line-height: 1.12;
+  text-transform: uppercase;
+  letter-spacing: .01em;
+}
+
+.hero__bar {
+  display: block;
+  width: 88px; height: 6px;
+  margin-top: 1.6rem;
+  background: var(--red);
+  border-radius: 3px;
+  box-shadow: 0 0 14px rgba(224,16,30,.55);
+}
+
+/* ==========================================================
+   PAINEL DE ACESSO
+   ========================================================== */
+.access {
+  display: grid;
+  place-items: center;
+  padding: 2.5rem;
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 0%, rgba(30,60,110,.18), transparent 70%),
+    var(--bg);
+}
+
+.card {
+  width: 100%;
+  max-width: 560px;
+  padding: 3rem 3.4rem 2.4rem;
+  background: linear-gradient(180deg, rgba(12,22,38,.9), rgba(7,13,23,.9));
+  border: 1px solid #14233a;
+  border-radius: 18px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.45);
+}
+
+/* ---------- Marca ---------- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.brand__icon { width: 46px; height: 38px; stroke: none; }
+
+.brand__name {
+  font-family: var(--font-brand);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 3rem;
+  line-height: 1;
+  letter-spacing: .01em;
+}
+
+.brand__divider {
+  width: 1px; height: 46px;
+  background: #2a3a52;
+  margin: 0 .35rem;
+}
+
+.brand__desc {
+  font-family: var(--font-title);
+  font-weight: 500;
+  font-size: .98rem;
+  line-height: 1.35;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: #a9bfdc;
+}
+
+/* ---------- Títulos ---------- */
+.title {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: clamp(1.9rem, 3vw, 2.4rem);
+  line-height: 1.1;
+  letter-spacing: -.01em;
+}
+.title span { color: var(--red); }
+
+.subtitle {
+  margin: .55rem 0 2rem;
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+
+/* ---------- Campos ---------- */
+.form { display: flex; flex-direction: column; }
+
+.field {
+  display: flex;
+  align-items: stretch;
+  height: 54px;
+  margin-bottom: 1.1rem;
+  background: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.field:focus-within {
+  border-color: var(--line-focus);
+  box-shadow: 0 0 0 3px rgba(58,110,165,.25);
+}
+
+.field.is-invalid { border-color: var(--red); }
+
+.field__icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  flex-shrink: 0;
+  color: #c9d6e8;
+  border-right: 1px solid var(--line);
+  cursor: text;
+}
+.field__icon svg { width: 22px; height: 22px; }
+
+.field input {
+  flex: 1;
+  min-width: 0;
+  padding: 0 1rem;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font: 400 1rem var(--font-body);
+  color: var(--text);
+}
+.field input::placeholder { color: var(--placeholder); }
+
+.field__toggle {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  background: transparent;
+  border: 0;
+  color: #c9d6e8;
+  cursor: pointer;
+}
+.field__toggle svg { width: 22px; height: 22px; }
+.field__toggle:hover { color: #fff; }
+.field__toggle:focus-visible { outline: 2px solid var(--blue-link); outline-offset: -4px; border-radius: 8px; }
+
+.icon-eye-off { display: none; }
+.field__toggle[aria-pressed="true"] .icon-eye { display: none; }
+.field__toggle[aria-pressed="true"] .icon-eye-off { display: block; }
+
+.form__error {
+  margin: -.2rem 0 .9rem;
+  font-size: .9rem;
+  color: #ff6b75;
+}
+
+/* ---------- Opções ---------- */
+.options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: .35rem 0 1.7rem;
+  font-size: .95rem;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: .8rem;
+  color: #b7c4d6;
+  cursor: pointer;
+}
+.check input { position: absolute; width: 1px; min-height: 0; opacity: 0; pointer-events: none; }
+
+.check__box {
+  width: 22px; height: 22px;
+  border: 1px solid #3a4c66;
+  border-radius: 5px;
+  background: var(--field);
+  display: grid; place-items: center;
+  transition: background .15s, border-color .15s;
+}
+.check__box::after {
+  content: "";
+  width: 11px; height: 6px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translate(1px, -1px);
+  opacity: 0;
+}
+.check input:checked + .check__box { background: var(--red); border-color: var(--red); }
+.check input:checked + .check__box::after { opacity: 1; }
+.check input:focus-visible + .check__box { outline: 2px solid var(--blue-link); outline-offset: 2px; }
+
+.link {
+  color: var(--blue-link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.link:hover { color: #86c1ff; }
+
+/* ---------- Botão ---------- */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  height: 60px;
+  padding: 0;
+  border: 1px solid #ff3b49;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ee1626 0%, #c10c19 55%, #9d0914 100%);
+  color: #fff;
+  font: 700 1.1rem var(--font-title);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(224,16,30,.28), inset 0 1px 0 rgba(255,255,255,.22);
+  transition: transform .15s, filter .2s, box-shadow .2s;
+}
+.btn:hover { filter: brightness(1.1); box-shadow: 0 12px 34px rgba(224,16,30,.4), inset 0 1px 0 rgba(255,255,255,.25); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.btn:disabled { cursor: progress; filter: saturate(.6) brightness(.85); }
+
+.btn__arrow { width: 24px; height: 24px; stroke-width: 2; }
+.btn__sep { width: 1px; height: 26px; background: rgba(255,255,255,.35); }
+
+.btn.is-loading .btn__arrow { animation: slide .8s ease-in-out infinite; }
+@keyframes slide { 50% { transform: translateX(5px); } }
+
+/* ---------- Rodapé do card ---------- */
+.note {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-top: 2.2rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid #14233a;
+  font-size: .88rem;
+  color: #7f91a9;
+}
+.note svg { width: 20px; height: 20px; color: #9fb0c6; }
+.note i { width: 4px; height: 4px; border-radius: 50%; background: #7f91a9; }
+
+/* ==========================================================
+   RESPONSIVO
+   ========================================================== */
+@media (max-width: 1000px) {
+  .login { grid-template-columns: 1fr; }
+  .hero { display: none; }
+  .access { min-height: 100vh; padding: 1.25rem; }
+  .card { padding: 2.2rem 1.6rem 1.8rem; }
+}
+
+@media (max-width: 480px) {
+  .brand { flex-wrap: wrap; gap: .75rem; }
+  .brand__divider { display: none; }
+  .brand__name { font-size: 2.4rem; }
+  .options { flex-direction: column; align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

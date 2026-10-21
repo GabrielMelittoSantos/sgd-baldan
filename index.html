@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SGD • Sistema de Gestão de Dispositivos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800&family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <link rel="stylesheet" href="/src/styles/login.css">
+</head>
+<body>
+  <main class="login">
+
+    <!-- ===== Painel visual (esquerda) ===== -->
+    <section class="hero" aria-hidden="true">
+      <div class="hero__machine"></div>
+      <span class="hero__shape hero__shape--solid"></span>
+
+      <div class="hero__text">
+        <p class="hero__slogan">Mais controle.<br>Menos paradas.</p>
+        <span class="hero__bar"></span>
+      </div>
+    </section>
+
+    <!-- ===== Painel de acesso (direita) ===== -->
+    <section class="access">
+      <div class="card">
+
+        <header class="brand">
+          <svg class="brand__icon" viewBox="0 0 48 40" aria-hidden="true">
+            <path d="M0 0h12l14 13-5 5 5 5L12 36H0l13-13-5-5 5-5z" fill="#e0101e"/>
+            <path d="M22 0h12l14 20-14 20H22l12-17z" fill="#e0101e" transform="translate(0 0) scale(1 1)" opacity=".0"/>
+            <path d="M24 4h10l12 14-12 14H24l10-12z" fill="#e0101e"/>
+          </svg>
+          <span class="brand__name">SGD</span>
+          <span class="brand__divider"></span>
+          <span class="brand__desc">Sistema de Gestão<br>de Dispositivos</span>
+        </header>
+
+        <h1 class="title">Bem-vindo ao <span>SGD</span></h1>
+        <p class="subtitle">Acesse sua conta para continuar.</p>
+
+        <form id="loginForm" class="form" novalidate>
+
+          <div class="field">
+            <label class="field__icon" for="usuario">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.2 3.6-7 8-7s8 2.8 8 7"/></svg>
+              <span class="sr-only">Usuário ou e-mail</span>
+            </label>
+            <input id="usuario" name="usuario" type="text" placeholder="E-mail corporativo" autocomplete="username" required>
+          </div>
+
+          <div class="field">
+            <label class="field__icon" for="senha">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>
+              <span class="sr-only">Senha</span>
+            </label>
+            <input id="senha" name="senha" type="password" placeholder="Senha" autocomplete="current-password" required>
+            <button type="button" id="togglePassword" class="field__toggle" aria-label="Mostrar senha" aria-pressed="false">
+              <svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.5 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7c1.5 0 2.9-.4 4.1-.9"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+            </button>
+          </div>
+
+          <p id="formError" class="form__error" role="alert" hidden></p>
+
+          <div class="options">
+            <label class="check">
+              <input type="checkbox" id="lembrar" name="lembrar">
+              <span class="check__box"></span>
+              <span class="check__label">Lembrar acesso</span>
+            </label>
+            <a href="#" class="link">Esqueci minha senha</a>
+          </div>
+
+          <button type="submit" class="btn" id="btnEntrar">
+            <svg class="btn__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+            <span class="btn__sep"></span>
+            <span class="btn__text">Entrar</span>
+          </button>
+        </form>
+
+        <footer class="note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          <span>Acesso restrito</span>
+          <i></i>
+          <span>Ambiente corporativo</span>
+        </footer>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/src/services/auth.js"></script>
+  <script src="/src/js/script.js"></script>
+</body>
+</html>

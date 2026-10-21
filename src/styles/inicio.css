@@ -1,0 +1,11 @@
+/* SGD • Início */
+.big { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--gap); }
+.big__card { --c: var(--red); display: grid; gap: .9rem; padding: 1.6rem; border-radius: 14px; border: 1px solid var(--c); background: linear-gradient(160deg, color-mix(in srgb, var(--c) 45%, #050a13), #050a13 75%); min-height: 300px; align-content: end; }
+.big__card--corretivo  { --c: var(--red); }
+.big__card--preventivo { --c: var(--blue); }
+.big__card--liberacao  { --c: var(--green); }
+.big__icon { width: 56px; height: 56px; border-radius: var(--radius); background: var(--c); display: grid; place-items: center; align-self: start; }
+.big__card h2 { font-size: 1.7rem; text-transform: uppercase; }
+.big__card p { color: #d5deea; }
+.big__count { display: flex; gap: .8rem; align-items: center; background: rgba(0,0,0,.35); border-radius: var(--radius); padding: .8rem 1rem; }
+.big__count b { font: 700 2rem var(--font-title); }

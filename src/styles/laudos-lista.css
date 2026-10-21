@@ -1,0 +1,9 @@
+/* SGD • Lista "Meus laudos" (liberação / corretiva / preventiva) */
+.pill--count { --pill: var(--acc); color: var(--on-acc); }
+.pill--info  { --pill: var(--blue); }
+.pill--pend  { --pill: var(--amber); color: #1a1200; }
+.pill--redo  { --pill: var(--red); }
+.pill--ok    { --pill: var(--green); color: #04120a; }
+.nota { max-width: 260px; margin-top: .3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row-actions { display: flex; gap: .4rem; }
+.empty { text-align: center; color: var(--muted); padding: 2rem 1rem; }

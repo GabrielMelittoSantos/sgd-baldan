@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SGD • Dispositivos</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800&family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../styles/global.css"><link rel="stylesheet" href="../styles/dispositivos.css"></head><body class="t-red"><div class="app"><aside class="side" id="side"></aside><div><header class="top" id="top"></header><main>
+ <div class="head"><div><h1>Dispositivos</h1><p class="sub">Lista completa de dispositivos cadastrados no sistema.</p></div><span class="sp"></span>
+  <label class="search"><span data-ic="search"></span><input id="q" placeholder="Buscar por código, nome, produto ou responsável…" aria-label="Buscar"></label></div>
+ <section class="stats">
+  <div class="stat"><span data-ic="file"></span><div><small>Total de dispositivos</small><b id="tot">48</b></div></div>
+  <div class="stat"><div><small class="c-montagem">Montagem</small><b>12</b><small>25%</small></div></div>
+  <div class="stat"><div><small class="c-usinagem">Usinagem</small><b>10</b><small>21%</small></div></div>
+  <div class="stat"><div><small class="c-solda">Solda</small><b>8</b><small>17%</small></div></div>
+  <div class="stat"><div><small class="c-furadeira">Furadeira</small><b>6</b><small>12%</small></div></div>
+  <div class="stat"><div><small>Outros</small><b>12</b><small>25%</small></div></div>
+ </section>
+ <div class="tw"><table><thead><tr><th>Dispositivo</th><th>Produto</th><th>Responsável</th><th>Tipo</th><th>Laudos aprovados</th><th>Última atualização</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table></div>
+ <p class="sub" id="cnt"></p>
+</main>
+</div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../js/layout.js"></script><script src="../services/dispositivos.js"></script>
+<script>
+SGD.shell('dispositivos');
+const ST={ok:'Em dia',pend:'Pendente',late:'Atrasado',lib:'Liberado'},esc=SGD.esc;
+const q=document.getElementById('q'),tb=document.getElementById('rows'),cnt=document.getElementById('cnt');
+q.value=new URLSearchParams(location.search).get('q')||'';
+const lb=(k,t,n)=>`<span class="lb lb--${k}${n?'':' lb--off'}" title="${n} laudo(s) de ${t} aprovado(s)">${k.toUpperCase()} ${n}</span>`;
+function draw(){const t=q.value.toLowerCase(),todos=Dispositivos.listar();
+ const l=todos.filter(d=>[d.cod,d.desc,d.produto,d.resp,d.tipo].join(' ').toLowerCase().includes(t));
+ const novos=todos.filter(d=>d.novo).length;document.getElementById('tot').textContent=48+novos;
+ cnt.textContent=`Mostrando ${l.length} de ${48+novos} dispositivos`;
+ tb.innerHTML=l.map(d=>{const sub=d.status==='lib'&&d.lib?`Liberação aprovada em ${new Date(d.lib.decisao.em).toLocaleDateString('pt-BR')}`:`Próxima preventiva ${esc(d.prox)}`;
+  return `<tr class="row" tabindex="0" data-c="${esc(d.cod)}"><td><div class="dev"><span class="thumb"></span><div><b>${esc(d.cod)}</b><small>${esc(d.desc)}</small></div></div></td><td>${esc(d.produto)}<small>Baldan</small></td><td>${esc(d.resp)}<small>Ferramentaria</small></td><td><span class="pill pill--${esc(d.tipo.toLowerCase())}">${esc(d.tipo)}</span></td><td><div class="lbs">${lb('lib','liberação',d.cont.liberacao)}${lb('cor','corretiva',d.cont.corretiva)}${lb('pre','preventiva',d.cont.preventiva)}</div></td><td>${esc(d.upd)}</td><td><span class="dot dot--${d.status}"></span>${ST[d.status]}<small>${sub}</small></td></tr>`}).join('')||'<tr><td colspan="7" class="empty">Nenhum dispositivo encontrado. Ajuste a busca.</td></tr>'}
+q.addEventListener('input',draw);draw();
+const abrir=r=>{if(r)location.href='dispositivo.html?cod='+encodeURIComponent(r.dataset.c)};
+tb.addEventListener('click',e=>abrir(e.target.closest('tr[data-c]')));
+tb.addEventListener('keydown',e=>{if(e.key==='Enter')abrir(e.target.closest('tr[data-c]'))});
+</script>
+</body></html>

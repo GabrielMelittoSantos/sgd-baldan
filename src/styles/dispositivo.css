@@ -1,0 +1,9 @@
+/* SGD • Detalhe do dispositivo */
+.kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .9rem 1.2rem; }
+.kv small { display: block; color: var(--muted); font-size: .74rem; margin-bottom: .15rem; }
+.kv b { font-weight: 600; }
+.sec { font: 600 .9rem var(--font-title); margin: 1.2rem 0 .6rem; color: var(--text-soft); }
+.stat b.sm { font-size: 1.05rem; }
+.thumb--lg { width: 56px; height: 56px; }
+.card > h2 .pill { margin-left: .4rem; }
+.dmp-link { color: var(--blue-link); text-decoration: underline; text-underline-offset: 3px; }

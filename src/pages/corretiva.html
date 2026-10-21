@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SGD • Corretiva</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800&family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../styles/global.css"><link rel="stylesheet" href="../styles/laudos-lista.css"></head><body class="t-red" data-tipo="corretiva"><div class="app"><aside class="side" id="side"></aside><div><header class="top" id="top"></header><main>
+ <a class="back" href="inicio.html"><span data-ic="back"></span>Laudos</a>
+ <div class="head"><span class="badge-ic" data-ic="wrench"></span><div><h1>Corretiva</h1><p class="sub">Confira os laudos corretivos em andamento e gerencie novos registros.</p></div><span class="sp"></span><a class="btn pri" id="novo" href="corretiva-novo.html"><span data-ic="plus"></span>Novo laudo</a></div>
+ <p class="banner" id="aviso" role="status" hidden></p>
+ <section class="stats">
+  <div class="stat"><span data-ic="file"></span><div><small>Em andamento</small><b id="sAnd">0</b></div></div>
+  <div class="stat"><span data-ic="clock"></span><div><small>Aguardando gerente</small><b id="sPend">0</b></div></div>
+  <div class="stat"><span data-ic="warn"></span><div><small>Refazer documento</small><b id="sRedo">0</b></div></div>
+  <div class="stat"><span data-ic="target"></span><div><small>Aprovados no mês</small><b id="sApr">0</b></div></div>
+  <div class="stat"><div><small>Fila de laudos</small><b id="sUso">0%</b><small id="sUsoTxt"></small></div></div>
+ </section>
+ <div class="head"><h2>Meus laudos <span class="pill pill--count" id="n">0</span></h2><span class="sp"></span>
+  <label class="search"><span data-ic="search"></span><input id="q" placeholder="Buscar por código, produto ou responsável…" aria-label="Buscar"></label></div>
+ <div class="tw"><table><thead><tr><th>Código</th><th>Produto</th><th>Responsável</th><th>Última atualização</th><th>Status</th><th>Ações</th></tr></thead><tbody id="rows"></tbody></table></div>
+</main></div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../js/layout.js"></script><script src="../js/lista-laudos.js"></script></body></html>

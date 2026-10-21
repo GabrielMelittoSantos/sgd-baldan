@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SGD • Aprovação de laudos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800&family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/global.css">
+  <link rel="stylesheet" href="../styles/laudos-lista.css">
+  <link rel="stylesheet" href="../styles/gestao-adm.css">
+</head>
+<body class="t-red" data-tipo="aprovacao">
+<div class="app"><aside class="side" id="side"></aside><div><header class="top" id="top"></header>
+<main>
+  <div class="head"><span class="badge-ic" data-ic="file"></span><div><h1>Aprovação de laudos</h1><p class="sub">Laudos concluídos pelos usuários aguardam a sua resposta. Aprove ou reprove com motivo; reprovados voltam ao usuário como “Refazer documento”.</p></div></div>
+
+  <section class="card">
+    <div class="head head--flush">
+      <h2>Laudos enviados <span class="pill pill--count" id="nPend">0</span></h2><span class="sp"></span>
+      <div class="filters">
+        <select id="filtro" aria-label="Filtrar por status">
+          <option value="pendente">Aguardando aprovação</option><option value="reprovado">Reprovados (refazer)</option>
+          <option value="aprovado">Aprovados</option><option value="andamento">Em andamento</option><option value="todos">Todos</option>
+        </select>
+        <label class="search"><span data-ic="search"></span><input id="busca" type="search" placeholder="Buscar O.S., DMP, responsável ou produto…" aria-label="Buscar laudos"></label>
+      </div>
+    </div>
+
+    <div class="tw mt"><table>
+      <thead><tr>
+        <th>O.S.</th><th>DMP</th><th>Responsável</th><th>Tipo de laudo</th><th>Data inicial</th><th>Data final</th><th>Produto</th><th>Status</th><th>Custo material</th><th>Custo mão de obra</th><th>Selecionar</th>
+      </tr></thead>
+      <tbody id="laudos"></tbody>
+    </table></div>
+
+    <div class="approval-footer">
+      <span class="approval-count" id="contador">0 laudos selecionados</span><span class="sp"></span>
+      <button class="btn" id="reprovar" type="button">Reprovar selecionados</button>
+      <button class="btn pri" id="aprovar" type="button">Aprovar selecionados</button>
+    </div>
+  </section>
+</main>
+</div></div>
+
+<dialog id="dlg">
+  <form id="fdlg" method="dialog">
+    <h2>Reprovar laudo(s)</h2>
+    <p class="sub">O usuário verá este motivo e o laudo voltará para a lista dele como “Refazer documento”.</p>
+    <div class="f"><label for="motivo">Motivo da reprovação <i>*</i></label><textarea id="motivo" maxlength="500" placeholder="Explique o que precisa ser corrigido…"></textarea></div>
+    <div class="actions"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn pri" id="okRep" type="button">Reprovar</button></div>
+  </form>
+</dialog>
+
+<script src="../services/auth.js"></script>
+<script src="../services/laudos.js"></script>
+<script src="../js/layout.js"></script>
+<script>
+SGD.shell('gestao-adm');
+if (!Auth.sessao().admin) location.replace('inicio.html'); // só a gestão acessa esta tela
+
+const $ = (s) => document.querySelector(s), tb = $('#laudos'), esc = SGD.esc;
+const PILL = { andamento: 'info', pendente: 'pend', reprovado: 'redo', aprovado: 'ok' };
+const dia = (iso) => (iso ? new Date(iso).toLocaleDateString('pt-BR') : '—');
+const reais = (v) => (v && !isNaN(v) ? 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : 'R$ —');
+const marcados = () => [...tb.querySelectorAll('.sel:checked')].map((i) => i.value);
+
+function contar() {
+  const n = marcados().length;
+  $('#contador').textContent = n + (n === 1 ? ' laudo selecionado' : ' laudos selecionados');
+}
+
+function draw() {
+  const st = $('#filtro').value, t = $('#busca').value.trim().toLowerCase();
+  const todos = Laudos.todosGestao();
+  $('#nPend').textContent = todos.filter((x) => x.status === 'pendente').length;
+  const l = todos.filter((x) => (st === 'todos' || x.status === st) &&
+    JSON.stringify([x.dados.os, x.dados.codigo, x.autorNome, x.dados.produto, Laudos.TIPOS[x.tipo]]).toLowerCase().includes(t))
+    .sort((a, b) => b.atualizado.localeCompare(a.atualizado));
+  tb.innerHTML = l.map((x) => `<tr>
+    <td>${esc(x.dados.os || '—')}</td>
+    <td><a class="dmp-link" href="${x.tipo}-novo.html?id=${x.id}" title="Abrir laudo (somente leitura)">${esc(x.dados.codigo || '—')}</a></td>
+    <td>${esc(x.autorNome)}</td><td style="text-transform:capitalize">${esc(Laudos.TIPOS[x.tipo])}</td>
+    <td>${dia(x.criado)}</td><td>${dia(x.enviado)}</td><td>${esc(x.dados.produto || '—')}</td>
+    <td><span class="pill pill--${PILL[x.status]}">${Laudos.STATUS[x.status]}</span>${x.status === 'reprovado' ? `<small title="${esc((x.decisao || {}).motivo)}">${esc((x.decisao || {}).motivo)}</small>` : ''}</td>
+    <td>${reais(x.dados.custo_material)}</td><td>${reais(x.dados.custo_mao_obra)}</td>
+    <td><input class="sel" type="checkbox" value="${x.id}" aria-label="Selecionar laudo ${esc(x.dados.codigo)}" ${x.status === 'pendente' ? '' : 'disabled title="Disponível apenas para laudos aguardando aprovação"'}></td></tr>`).join('')
+    || '<tr><td colspan="11" class="empty">Nenhum laudo neste filtro.</td></tr>';
+  contar();
+}
+
+tb.addEventListener('change', contar);
+$('#filtro').addEventListener('change', draw);
+$('#busca').addEventListener('input', draw);
+
+$('#aprovar').onclick = () => {
+  const ids = marcados(); if (!ids.length) return SGD.toast('Selecione ao menos um laudo aguardando aprovação.');
+  try { const n = Laudos.decidir(ids, true); SGD.toast(n + (n === 1 ? ' laudo aprovado' : ' laudos aprovados')); draw(); } catch (e) { SGD.toast(e.message, 4500); }
+};
+$('#reprovar').onclick = () => {
+  if (!marcados().length) return SGD.toast('Selecione ao menos um laudo aguardando aprovação.');
+  $('#motivo').value = ''; $('#motivo').classList.remove('bad'); $('#dlg').showModal(); $('#motivo').focus();
+};
+$('#okRep').onclick = () => {
+  const m = $('#motivo');
+  try { const n = Laudos.decidir(marcados(), false, m.value); $('#dlg').close(); SGD.toast(n + (n === 1 ? ' laudo devolvido para refazer' : ' laudos devolvidos para refazer')); draw(); }
+  catch (e) { m.classList.add('bad'); SGD.toast(e.message, 4500); }
+};
+draw();
+</script>
+</body>
+</html>

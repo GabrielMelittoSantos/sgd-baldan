@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SGD • Novo laudo de liberação</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800&family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../styles/global.css"><link rel="stylesheet" href="../styles/liberacao-novo.css"></head><body class="t-green"><div class="app"><aside class="side" id="side"></aside><div><header class="top" id="top"></header><main><form id="f" class="page-form" novalidate>
+ <a class="back" href="liberacao.html"><span data-ic="back"></span>Voltar</a>
+ <div class="head"><span class="badge-ic" data-ic="file"></span><div><h1>Novo laudo de liberação</h1><p class="sub">Preencha as informações do laudo conforme o desenho técnico e valide o dispositivo.</p></div></div>
+ <div class="split">
+  <section class="card"><h2><span data-ic="file"></span>Informações gerais</h2><div class="fg">
+   <div class="f"><label for="cod">Código do dispositivo <i>*</i></label><input id="cod" name="codigo" placeholder="Ex.: DMP010100" required></div>
+   <div class="f"><label for="prod">Produto <i>*</i></label><select id="prod" name="produto" required><option value="">Selecione o produto</option><option>Plataforma Dianteira</option><option>Base de Corte</option><option>Suporte Lateral</option></select></div>
+   <div class="f"><label for="dt">Data da validação <i>*</i></label><input id="dt" name="data" type="date" required></div>
+   <div class="f"><label for="os">Ordem de serviço <i>*</i></label><input id="os" name="os" placeholder="Ex.: OS-000123" required></div>
+   <div class="f"><label for="conf">Conferente <i>*</i></label><select id="conf" name="conferente" required><option value="">Selecione o conferente</option><option>Carlos Silva</option><option>Rafael Costa</option></select></div>
+   <div class="f"><label for="rp">Responsável projeto <i>*</i></label><select id="rp" name="resp_projeto" required><option value="">Selecione o responsável</option><option>Juliano Pereira</option><option>Thiago Martins</option></select></div>
+   <div class="f"><label for="rf">Responsável fabricação <i>*</i></label><select id="rf" name="resp_fab" required><option value="">Selecione o responsável</option><option>Lucas Fernandes</option><option>André Oliveira</option></select></div>
+   <div class="f"><label for="tipo">Tipo <i>*</i></label><select id="tipo" name="tipo" required><option value="">Selecione o tipo</option><option>Montagem</option><option>Solda</option><option>Usinagem</option><option>Furadeira</option></select></div>
+  </div></section>
+  <!--<section class="card"><h2>Amostra</h2>
+   <label class="radio"><input type="radio" name="amostra" value="liberacao" checked>Liberação</label>
+   <label class="radio"><input type="radio" name="amostra" value="corretiva">Corretiva</label>
+   <label class="radio"><input type="radio" name="amostra" value="preventiva">Preventiva</label></section>-->
+ </div>
+ <div class="split split--drawing">
+  <section class="card"><h2><span data-ic="file"></span>Desenho técnico</h2>
+   <label class="drop"><span data-ic="up"></span><b>Importar desenho boleado</b><span id="prev">Nenhum desenho importado. O desenho servirá de referência para as medidas.</span><input id="file" type="file" accept="image/*,.pdf" hidden></label></section>
+  <section class="card"><div class="head head--flush"><h2>Medidas / especificações</h2><span class="sp"></span><button type="button" id="addM" class="btn sm"><span data-ic="plus"></span>Adicionar medida</button></div>
+   <div class="tw mt"><table class="tbl"><thead><tr><th>Nº</th><th>Descrição</th><th>Especificação</th><th>Mínimo</th><th>Máximo</th><th>Método / instrumento</th><th>Medição</th><th>Aprovado</th><th>Reprovado</th><th><span class="sr-only">Remover</span></th></tr></thead><tbody id="medidas" data-rows></tbody></table></div></section>
+ </div>
+ <section class="card"><div class="head head--flush"><h2>Checklist</h2><span class="sp"></span><button type="button" id="addC" class="btn sm"><span data-ic="plus"></span>Adicionar item</button></div>
+  <div class="tw mt"><table class="tbl"><thead><tr><th>Nº</th><th>Descrição</th><th>Resultado</th><th><span class="sr-only">Remover</span></th></tr></thead><tbody id="check" data-rows></tbody></table></div></section>
+ <div class="actions"><a class="btn" href="liberacao.html"><span data-ic="x"></span>Cancelar</a><button class="btn" type="submit"><span data-ic="save"></span>Salvar laudo</button><button class="btn pri" type="button" id="concluir"><span data-ic="file"></span>Concluir e enviar</button></div>
+</form></main></div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../js/layout.js"></script><script>
+SGD.shell('dispositivos');
+const T='liberacao',$=s=>document.querySelector(s),f=$('#f'),M=$('#medidas'),C=$('#check'),K=['desc','espec','min','max','metodo','medicao'];
+const params=new URLSearchParams(location.search);let uid=0,atual=null;
+const renum=b=>[...b.rows].forEach((r,i)=>r.cells[0].textContent=i+1);
+const del=SGD.ic('x');
+const mrow=(m={})=>{const n=++uid;M.insertAdjacentHTML('beforeend',`<tr><td></td>${K.map(k=>`<td><input aria-label="${k}" value="${SGD.esc(m[k]||'')}"></td>`).join('')}<td><input type="radio" name="ap${n}" value="a" aria-label="Aprovado"${m.res==='a'?' checked':''}></td><td><input type="radio" name="ap${n}" value="r" aria-label="Reprovado"${m.res==='r'?' checked':''}></td><td><button type="button" class="btn-icon" data-del aria-label="Remover medida">${del}</button></td></tr>`);renum(M)};
+const crow=(c={})=>{const n=++uid;C.insertAdjacentHTML('beforeend',`<tr><td></td><td>${SGD.esc(c.desc)}</td><td><div class="res">${['OK','NÃO OK','N/A'].map(o=>`<label><input type="radio" name="c${n}" value="${o}"${(c.res||'OK')===o?' checked':''}>${o}</label>`).join('')}</div></td><td><button type="button" class="btn-icon" data-del aria-label="Remover item">${del}</button></td></tr>`);renum(C)};
+const dados=()=>({...SGD.simple(f),
+ medidas:[...M.rows].map(r=>({...Object.fromEntries(K.map((k,i)=>[k,r.cells[i+1].firstChild.value])),res:(r.querySelector('input:checked')||{}).value||''})),
+ checklist:[...C.rows].map(r=>({desc:r.cells[1].textContent,res:r.querySelector('input:checked').value}))});
+
+f.addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;const tb=b.closest('tbody');
+ if(tb.rows.length<=1)return SGD.toast('Mantenha ao menos uma linha.');b.closest('tr').remove();renum(tb)});
+$('#addM').onclick=()=>mrow();
+$('#addC').onclick=()=>{const t=(prompt('Descrição do item')||'').trim();if(t)crow({desc:t})};
+$('#file').onchange=e=>{const x=e.target.files[0];if(x)$('#prev').innerHTML=`<img alt="Desenho técnico" src="${URL.createObjectURL(x)}">`};
+
+function gravar(status){
+ const req=status==='pendente'?[...f.querySelectorAll('[required]')]:[$('#cod')];let ok=true;
+ req.forEach(i=>{const b=!i.value.trim();i.classList.toggle('bad',b);if(b)ok=false});
+ if(!ok)return SGD.toast('Preencha os campos obrigatórios.');
+ try{Laudos.salvar({id:atual&&atual.id,tipo:T,status,dados:dados()});SGD.toast(status==='pendente'?'Laudo enviado para aprovação do gerente':'Laudo salvo');setTimeout(()=>location.href='liberacao.html',900)}
+ catch(err){SGD.toast(err.message,4500)}}
+f.onsubmit=e=>{e.preventDefault();gravar('andamento')};
+$('#concluir').onclick=()=>gravar('pendente');
+
+const id=params.get('id');
+if(id){atual=Laudos.obter(id);if(!atual||atual.tipo!==T)location.replace('liberacao.html')}
+if(atual){const d=atual.dados;SGD.fill(f,d);(d.medidas||[]).forEach(mrow);(d.checklist||[]).forEach(crow);
+ if(!Laudos.editavel(atual))SGD.bloquear(f,Laudos.msgLeitura(atual));else if(atual.status==='reprovado')SGD.aviso(f,Laudos.msgReprovado(atual))}
+else{for(let i=0;i<4;i++)mrow();['Conferir esquadro de todos os conjuntos','Aperto de todos os parafusos','Lubrificação de todos os componentes','Presença de solda em toda a solda (se aplicável)'].forEach(desc=>crow({desc}));
+ if(params.get('cod'))$('#cod').value=params.get('cod');
+ if(Laudos.vagas(T)<=0)SGD.bloquear(f,Laudos.msgLimite(T))}
+</script></body></html>

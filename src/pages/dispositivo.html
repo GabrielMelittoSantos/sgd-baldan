@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SGD • Dispositivo</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800&family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../styles/global.css"><link rel="stylesheet" href="../styles/laudos-lista.css"><link rel="stylesheet" href="../styles/dispositivos.css"><link rel="stylesheet" href="../styles/dispositivo.css"></head><body class="t-red"><div class="app"><aside class="side" id="side"></aside><div><header class="top" id="top"></header><main id="m"></main>
+</div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../js/layout.js"></script><script src="../services/dispositivos.js"></script>
+<script>
+SGD.shell('dispositivos');
+const esc=SGD.esc,m=document.getElementById('m'),d=Dispositivos.obter(new URLSearchParams(location.search).get('cod')||'');
+const dia=v=>v?(/^\d{4}-\d{2}-\d{2}$/.test(v)?v.split('-').reverse().join('/'):new Date(v).toLocaleDateString('pt-BR')):'—';
+const kv=(k,v)=>`<div><small>${k}</small><b>${esc(v||'—')}</b></div>`;
+const ST={ok:'Em dia',pend:'Pendente',late:'Atrasado',lib:'Liberado'};
+const RES={a:'Aprovado',r:'Reprovado','':'—'};
+const back='<a class="back" href="dispositivos.html"><span data-ic="back"></span>Dispositivos</a>';
+if(!d){m.innerHTML=back+'<p class="banner">Dispositivo não encontrado.</p>'}
+else{
+ const L=d.lib,x=L?L.dados:{};
+ const lib=L?`<section class="card"><h2><span data-ic="file"></span>Laudo de liberação vigente <span class="pill pill--ok">Aprovado</span></h2>
+  <div class="kv">${kv('Data da validação',dia(x.data))}${kv('Ordem de serviço',x.os)}${kv('Conferente',x.conferente)}${kv('Responsável projeto',x.resp_projeto)}${kv('Responsável fabricação',x.resp_fab)}${kv('Preenchido por',L.autorNome)}${kv('Aprovado por',L.decisao.por)}${kv('Aprovado em',new Date(L.decisao.em).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}))}</div>
+  <h3 class="sec">Medidas / especificações</h3><div class="tw"><table><thead><tr><th>Nº</th><th>Descrição</th><th>Especificação</th><th>Mínimo</th><th>Máximo</th><th>Método / instrumento</th><th>Medição</th><th>Resultado</th></tr></thead><tbody>${(x.medidas||[]).map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.desc)||'—'}</td><td>${esc(r.espec)||'—'}</td><td>${esc(r.min)||'—'}</td><td>${esc(r.max)||'—'}</td><td>${esc(r.metodo)||'—'}</td><td>${esc(r.medicao)||'—'}</td><td>${RES[r.res||'']}</td></tr>`).join('')||'<tr><td colspan="8" class="empty">Sem medidas registradas.</td></tr>'}</tbody></table></div>
+  <h3 class="sec">Checklist</h3><div class="tw"><table><thead><tr><th>Nº</th><th>Descrição</th><th>Resultado</th></tr></thead><tbody>${(x.checklist||[]).map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.desc)}</td><td>${esc(r.res)}</td></tr>`).join('')||'<tr><td colspan="3" class="empty">Sem itens.</td></tr>'}</tbody></table></div></section>`
+ :'<p class="banner">Este dispositivo ainda não tem laudo de liberação aprovado pela gerência.</p>';
+ const hist=`<section class="card"><h2><span data-ic="clock"></span>Histórico de laudos aprovados</h2><div class="tw"><table><thead><tr><th>Aprovado em</th><th>Tipo</th><th>O.S.</th><th>Responsável</th><th>Aprovado por</th><th>Laudo</th></tr></thead><tbody>${d.laudos.map(l=>`<tr><td>${new Date(l.decisao.em).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}</td><td style="text-transform:capitalize">${esc(Laudos.TIPOS[l.tipo])}</td><td>${esc(l.dados.os)||'—'}</td><td>${esc(l.autorNome)}</td><td>${esc(l.decisao.por)}</td><td><a class="dmp-link" href="${l.tipo}-novo.html?id=${l.id}">Visualizar</a></td></tr>`).join('')||'<tr><td colspan="6" class="empty">Nenhum laudo aprovado ainda.</td></tr>'}</tbody></table></div></section>`;
+ m.innerHTML=back+`<div class="head"><span class="thumb thumb--lg"></span><div><h1>${esc(d.cod)}</h1><p class="sub">${esc(d.desc)} · ${esc(d.produto)}</p></div><span class="sp"></span><span class="pill pill--${esc(d.tipo.toLowerCase())}">${esc(d.tipo)}</span></div>
+  <section class="stats">
+   <div class="stat"><span data-ic="clock"></span><div><small>Última atualização</small><b class="sm">${esc(d.upd)}</b></div></div>
+   <div class="stat"><span data-ic="target"></span><div><small>Status</small><b class="sm">${ST[d.status]}</b></div></div>
+   <div class="stat"><span data-ic="cal"></span><div><small>Próxima preventiva</small><b class="sm">${esc(d.prox)}</b></div></div>
+   <div class="stat"><span data-ic="file"></span><div><small>Laudos aprovados</small><b class="sm">${d.laudos.length}</b></div></div>
+  </section>
+  <section class="card"><h2><span data-ic="grid"></span>Informações do dispositivo</h2><div class="kv">${kv('Código',d.cod)}${kv('Descrição',d.desc)}${kv('Produto',d.produto)}${kv('Responsável',d.resp)}${kv('Tipo',d.tipo)}${kv('Última atualização',d.upd)}</div></section>`+lib+hist;
+ document.querySelectorAll('#m [data-ic]').forEach(e=>e.innerHTML=SGD.ic(e.dataset.ic));
+}
+</script>
+</body></html>

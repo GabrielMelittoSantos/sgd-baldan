@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SGD • Início</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800&family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../styles/global.css"><link rel="stylesheet" href="../styles/inicio.css"></head><body class="t-red"><div class="app"><aside class="side" id="side"></aside><div><header class="top" id="top"></header><main>
+ <div class="head"><div><h1>Bem-vindo ao SGD</h1><p class="sub">Selecione o tipo de laudo que deseja registrar.</p></div><span class="sp"></span>
+  <label class="search"><span data-ic="search"></span><input id="q" placeholder="Buscar dispositivo por código, descrição ou projeto…" aria-label="Buscar dispositivo"></label></div>
+ <section class="big">
+  <a class="big__card big__card--corretivo" href="corretiva.html"><span class="big__icon" data-ic="wrench"></span><h2>Laudo corretivo</h2><p>Registre a correção de falhas e indique a causa raiz para evitar a reincidência.</p><div class="big__count"><b data-cnt="corretiva">0</b><span>na fila · máx. 5</span></div></a>
+  <a class="big__card big__card--preventivo" href="preventiva.html"><span class="big__icon" data-ic="cal"></span><h2>Laudo preventivo</h2><p>Realize a manutenção conforme o checklist específico de cada dispositivo.</p><div class="big__count"><b data-cnt="preventiva">0</b><span>na fila · máx. 5</span></div></a>
+  <a class="big__card big__card--liberacao" href="liberacao.html"><span class="big__icon" data-ic="file"></span><h2>Laudo de liberação</h2><p>Confirme as medidas críticas, checklist e libere o dispositivo para uso.</p><div class="big__count"><b data-cnt="liberacao">0</b><span>na fila · máx. 5</span></div></a>
+ </section>
+ <section class="stats">
+  <div class="stat"><span data-ic="target"></span><div><small>Dispositivos cadastrados</small><b id="nDev"></b></div></div>
+  <div class="stat"><span data-ic="cal"></span><div><small>Próximas preventivas (7 dias)</small><b>12</b></div></div>
+  <div class="stat"><span data-ic="warn"></span><div><small>Para refazer (reprovados)</small><b id="nRedo">0</b></div></div>
+ </section>
+</main>
+<script>document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')location.href='dispositivos.html?q='+encodeURIComponent(e.target.value)})</script>
+</div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../js/layout.js"></script>
+<script>
+SGD.shell('inicio');
+const d=SGD.devices;document.getElementById('nDev').textContent=48;
+</script>
+<script>['corretiva','preventiva','liberacao'].forEach(t=>document.querySelector('[data-cnt='+t+']').textContent=Laudos.fila(t).length);document.getElementById('nRedo').textContent=['corretiva','preventiva','liberacao'].reduce((a,t)=>a+Laudos.contar(t,'reprovado'),0)</script></body></html>

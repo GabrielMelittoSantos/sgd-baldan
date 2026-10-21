@@ -1,0 +1,19 @@
+/* SGD • Novo laudo de corretiva */
+.fish { display: grid; grid-template-columns: repeat(3, 1fr) 1.1fr; gap: var(--gap-sm); }
+.cat { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: .7rem; display: grid; gap: .4rem; align-content: start; }
+.cat h3 { display: flex; justify-content: space-between; align-items: center; font: 600 .85rem var(--font-title); color: var(--red-soft); }
+.cat h3 button { background: none; border: 1px solid var(--line); border-radius: 6px; width: 26px; height: 26px; display: grid; place-items: center; }
+.cat--root { grid-row: span 2; border-color: var(--red); }
+.cat--root textarea { min-height: 140px; }
+.cat--root small { text-align: right; color: var(--muted); }
+.ia { display: grid; gap: .6rem; }
+.ia__lead { margin: -.4rem 0 .8rem; }
+.ia__summary { border-color: var(--red); }
+.actions-list { display: grid; gap: .9rem; margin-top: .9rem; }
+.actions-list .fg { grid-template-columns: 1fr 1fr; }
+@media (max-width: 900px) { .fish, .actions-list .fg { grid-template-columns: 1fr; } .cat--root { grid-row: auto; } }
+
+/* Linhas removíveis */
+.cause { display: grid; grid-template-columns: 1fr auto; gap: .3rem; align-items: center; }
+.cause .btn-icon { width: 28px; height: 28px; }
+.action { display: grid; grid-template-columns: 1fr auto; gap: .6rem; align-items: start; }

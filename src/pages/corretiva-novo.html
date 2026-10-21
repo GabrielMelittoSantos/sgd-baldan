@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SGD • Novo laudo de corretiva</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800&family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../styles/global.css"><link rel="stylesheet" href="../styles/corretiva-novo.css"></head><body class="t-red"><div class="app"><aside class="side" id="side"></aside><div><header class="top" id="top"></header><main><form id="f" class="page-form" novalidate>
+ <a class="back" href="corretiva.html"><span data-ic="back"></span>Voltar</a>
+ <div class="head"><span class="badge-ic" data-ic="file"></span><div><h1>Novo laudo de corretiva</h1><p class="sub">Registre a falha, analise a causa raiz utilizando o método Ishikawa e descreva as ações corretivas.</p></div></div>
+ <div class="split">
+  <section class="card"><h2><span data-ic="file"></span>Informações gerais</h2><div class="fg">
+   <div class="f"><label for="cod">Código do dispositivo <i>*</i></label><input id="cod" name="codigo" placeholder="Ex.: DMP010100" required></div>
+   <div class="f"><label for="prod">Produto <i>*</i></label><select id="prod" name="produto" required><option value="">Selecione o produto</option><option>Plataforma Dianteira</option><option>Base de Corte</option></select></div>
+   <div class="f"><label for="dt">Data da falha <i>*</i></label><input id="dt" name="data" type="date" required></div>
+   <div class="f"><label for="os">Ordem de serviço <i>*</i></label><input id="os" name="os" placeholder="Ex.: OS-000123" required></div>
+   <div class="f"><label for="comp">Componente afetado <i>*</i></label><select id="comp" name="componente" required><option value="">Selecione o componente</option><option>Pino</option><option>Bucha</option><option>Grampo</option></select></div>
+   <div class="f"><label for="rm">Responsável pela manutenção <i>*</i></label><select id="rm" name="resp_manut" required><option value="">Selecione o responsável</option><option>Carlos Silva</option><option>Rafael Costa</option></select></div>
+   <div class="f"><label for="rf">Responsável pela fabricação <i>*</i></label><select id="rf" name="resp_fab" required><option value="">Selecione o responsável</option><option>Lucas Fernandes</option><option>André Oliveira</option></select></div>
+  </div></section>
+  <section class="card"><h2>Anexo do laudo</h2><label class="drop"><span data-ic="up"></span><span id="prev">Adicionar imagem ou foto (opcional)</span><input id="file" type="file" accept="image/*" hidden></label></section>
+ </div>
+ <div class="split">
+  <section class="card"><h2><span data-ic="wrench"></span>Análise de causa raiz — espinha de peixe (Ishikawa)</h2><p class="sub card__lead">Utilize o método 6M para identificar a causa raiz da falha.</p><div class="fish" id="fish"></div></section>
+  <section class="card"><h2>IA assistente de causa raiz</h2><p class="sub ia__lead">Descreva o que aconteceu e deixe a IA resumir o ocorrido e sugerir possíveis causas raiz.</p>
+   <div class="ia"><button type="button" id="ia-mic" class="btn pri"><span data-ic="mic"></span>Falar com a IA</button><button type="button" id="ia-txt" class="btn">Digitar descrição manual</button>
+   <textarea id="relato" name="relato" hidden placeholder="Descreva o que aconteceu…" aria-label="Relato"></textarea>
+   <div class="card ia__summary"><b>Resumo sugerido pela IA</b><p class="sub" id="resumo">Após a análise do relato, a IA irá sugerir possíveis causas raiz com base no histórico e nas boas práticas da ferramentaria.</p></div></div></section>
+ </div>
+ <section class="card"><div class="head head--flush"><h2><span data-ic="wrench"></span>Ações corretivas</h2><span class="sp"></span><button type="button" id="addA" class="btn sm"><span data-ic="plus"></span>Adicionar ação</button></div><div id="acts" class="actions-list" data-rows></div></section>
+ <section class="card"><div class="f"><label for="obs">Outras informações</label><textarea id="obs" name="obs" placeholder="Observações, anexos ou registros adicionais"></textarea></div></section>
+ <div class="actions"><a class="btn" href="corretiva.html"><span data-ic="x"></span>Cancelar</a><button class="btn" type="submit"><span data-ic="save"></span>Salvar laudo</button><button class="btn pri" type="button" id="concluir"><span data-ic="file"></span>Concluir e enviar</button></div>
+</form></main></div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../js/layout.js"></script><script>
+SGD.shell('dispositivos');
+const T='corretiva',$=s=>document.querySelector(s),f=$('#f'),A=$('#acts'),fish=$('#fish'),esc=SGD.esc;
+const CATS=['Método','Máquina','Material','Mão de obra','Medição','Meio ambiente'],X=SGD.ic('x');
+const cause=(c,v='')=>`<div class="cause"><input placeholder="Digite a causa relacionada…" aria-label="Causa — ${c}" value="${esc(v)}"><button type="button" class="btn-icon" data-del aria-label="Remover causa">${X}</button></div>`;
+fish.innerHTML=CATS.map(c=>`<div class="cat" data-cat="${c}" data-rows><h3>${c}<button type="button" data-add aria-label="Adicionar causa em ${c}">+</button></h3>${cause(c)+cause(c)+cause(c)}</div>`).join('')+
+ `<div class="cat cat--root"><h3>Causa raiz</h3><textarea id="root" name="causa_raiz" maxlength="500" required placeholder="Digite a causa raiz identificada…"></textarea><small id="rc">0/500</small></div>`;
+const act=(a={})=>A.insertAdjacentHTML('beforeend',`<div class="action"><div class="fg"><div class="f"><label>O que fazer? <i>*</i></label><textarea data-k="oque" maxlength="1000" required aria-label="O que fazer?" placeholder="Descreva a ação corretiva a ser realizada…">${esc(a.oque)}</textarea></div><div class="f"><label>Como fazer? <i>*</i></label><textarea data-k="como" maxlength="1000" required aria-label="Como fazer?" placeholder="Descreva o passo a passo da execução…">${esc(a.como)}</textarea></div></div><button type="button" class="btn-icon" data-del aria-label="Remover ação">${X}</button></div>`);
+const dados=()=>({...SGD.simple(f),
+ causas:Object.fromEntries([...fish.querySelectorAll('.cat[data-cat]')].map(c=>[c.dataset.cat,[...c.querySelectorAll('.cause input')].map(i=>i.value.trim()).filter(Boolean)])),
+ acoes:[...A.querySelectorAll('.action')].map(a=>({oque:a.querySelector('[data-k=oque]').value,como:a.querySelector('[data-k=como]').value}))});
+
+f.addEventListener('click',e=>{
+ const ad=e.target.closest('[data-add]');if(ad){const c=ad.closest('.cat');c.insertAdjacentHTML('beforeend',cause(c.dataset.cat));return}
+ const b=e.target.closest('[data-del]');if(!b)return;const it=b.closest('.cause,.action'),sel=it.matches('.cause')?'.cause':'.action';
+ if(it.parentElement.querySelectorAll(sel).length>1)return it.remove();
+ if(sel==='.cause')it.querySelector('input').value='';else SGD.toast('Mantenha ao menos uma ação.')});
+$('#addA').onclick=()=>act();
+$('#root').oninput=e=>$('#rc').textContent=e.target.value.length+'/500';
+$('#file').onchange=e=>{const x=e.target.files[0];if(x)$('#prev').innerHTML=`<img alt="Anexo" src="${URL.createObjectURL(x)}">`};
+/* IA: ponto de integração — envie o relato ao seu back-end e preencha as causas/sumário */
+const resumo=()=>{$('#relato').hidden=false;$('#resumo').textContent=$('#relato').value.slice(0,240)||'Após a análise do relato, a IA irá sugerir possíveis causas raiz.'};
+$('#ia-txt').onclick=()=>{$('#relato').hidden=false;$('#relato').focus()};
+$('#ia-mic').onclick=()=>{const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R)return SGD.toast('Voz não suportada neste navegador');
+ const r=new R();r.lang='pt-BR';r.onresult=e=>{$('#relato').value=e.results[0][0].transcript;resumo()};r.start()};
+$('#relato').onchange=resumo; /* TODO: fetch('/api/ia/causa-raiz') */
+
+function gravar(status){
+ const req=status==='pendente'?[...f.querySelectorAll('[required]')]:[$('#cod')];let ok=true;
+ req.forEach(i=>{const b=!i.value.trim();i.classList.toggle('bad',b);if(b)ok=false});
+ if(!ok)return SGD.toast('Preencha os campos obrigatórios.');
+ try{Laudos.salvar({id:atual&&atual.id,tipo:T,status,dados:dados()});SGD.toast(status==='pendente'?'Laudo enviado para aprovação do gerente':'Laudo salvo');setTimeout(()=>location.href='corretiva.html',900)}
+ catch(err){SGD.toast(err.message,4500)}}
+f.onsubmit=e=>{e.preventDefault();gravar('andamento')};
+$('#concluir').onclick=()=>gravar('pendente');
+
+let atual=null;const id=new URLSearchParams(location.search).get('id');
+if(id){atual=Laudos.obter(id);if(!atual||atual.tipo!==T)location.replace('corretiva.html')}
+if(atual){const d=atual.dados;SGD.fill(f,d);$('#rc').textContent=(d.causa_raiz||'').length+'/500';if(d.relato)resumo();
+ fish.querySelectorAll('.cat[data-cat]').forEach(c=>{const l=(d.causas||{})[c.dataset.cat]||[];if(l.length)c.querySelectorAll('.cause').forEach(x=>x.remove()),l.forEach(v=>c.insertAdjacentHTML('beforeend',cause(c.dataset.cat,v)))});
+ (d.acoes&&d.acoes.length?d.acoes:[{}]).forEach(act);
+ if(!Laudos.editavel(atual))SGD.bloquear(f,Laudos.msgLeitura(atual));else if(atual.status==='reprovado')SGD.aviso(f,Laudos.msgReprovado(atual))}
+else{act();if(Laudos.vagas(T)<=0)SGD.bloquear(f,Laudos.msgLimite(T))}
+</script></body></html>
