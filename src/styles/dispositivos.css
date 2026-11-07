@@ -2,6 +2,21 @@
 .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: .4rem; background: var(--green); }
 .dot--pend { background: var(--amber); }
 .dot--late { background: var(--red); }
+.dot--andamento {
+    background: #3b82f6;
+}
+  
+.dot--pendente {
+    background: #eab308;
+}
+  
+.dot--reprovado {
+    background: #ef4444;
+}
+  
+.dot--aprovado {
+    background: #22c55e;
+}
 .pill--montagem  { --pill: var(--t-montagem); }
 .pill--solda     { --pill: var(--t-solda); }
 .pill--usinagem  { --pill: var(--t-usinagem); }

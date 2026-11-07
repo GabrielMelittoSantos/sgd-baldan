@@ -83,7 +83,12 @@
     });
     gravar(lista); return n;
   }
-
+  // Retorna todos os laudos de um dispositivo,
+  // independentemente do usuário ou do status.
+  const porCodigo = (cod) => todos()
+    .filter(l => normCod(l.dados.codigo) === normCod(cod))
+    .sort((a, b) => b.atualizado.localeCompare(a.atualizado));
+  
   window.Laudos = { LIMITE, TIPOS, STATUS, fila, emAndamento: fila, ativos, contar, aprovadosMes, vagas, obter, editavel, salvar, excluir,
-    aprovados, normCod, todosGestao, decidir, msgLimite, msgLeitura, msgReprovado };
+    aprovados, normCod, todosGestao, decidir, msgLimite, msgLeitura, msgReprovado, porCodigo };
 })();
