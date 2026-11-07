@@ -34,7 +34,7 @@
       '<div class="logo"><span class="logo__mark">»</span> BALDAN<small>Ferramentaria</small></div>';
     const u = Auth.sessao(), ini = u.nome.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase();
     document.getElementById('top').innerHTML =
-      '<span class="sgd"><i>»</i> SGD</span><span class="desc">Sistema de Gestão<br>de Dispositivos</span><span class="sp"></span>' +
+      '<span class="sgd"><img src="/src/assests/image/LogoBaldan.png" alt="Logo"> SGD</span><span class="desc">Sistema de Gestão de Dispositivos</span><span class="sp"></span>' +
       `<button class="bell" aria-label="Notificações">${ic('bell')}<b>3</b></button>` +
       `<div class="user"><span class="av">${esc(ini)}</span><div class="user__info">${esc(u.nome)}<small>${esc(u.setor)}</small></div>` +
       `<button class="btn-icon" id="sair" aria-label="Sair">${ic('out')}</button></div>`;

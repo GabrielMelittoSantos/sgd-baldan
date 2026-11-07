@@ -5,14 +5,181 @@
   <section class="card"><h2><span data-ic="file"></span>Informações gerais</h2><div class="fg">
    <div class="f"><label for="cod">Código do dispositivo <i>*</i></label><input id="cod" name="codigo" placeholder="Ex.: DMP010100" required></div>
    <div class="f"><label for="prod">Produto <i>*</i></label><select id="prod" name="produto" required><option value="">Selecione o produto</option><option>Plataforma Dianteira</option><option>Base de Corte</option></select></div>
-   <div class="f"><label for="dt">Data da falha <i>*</i></label><input id="dt" name="data" type="date" required></div>
+   <div class="f"><label for="dt">⦁	Data de início  <i>*</i></label><input id="dt" name="data" type="date" required></div>
    <div class="f"><label for="os">Ordem de serviço <i>*</i></label><input id="os" name="os" placeholder="Ex.: OS-000123" required></div>
-   <div class="f"><label for="comp">Componente afetado <i>*</i></label><select id="comp" name="componente" required><option value="">Selecione o componente</option><option>Pino</option><option>Bucha</option><option>Grampo</option></select></div>
-   <div class="f"><label for="rm">Responsável pela manutenção <i>*</i></label><select id="rm" name="resp_manut" required><option value="">Selecione o responsável</option><option>Carlos Silva</option><option>Rafael Costa</option></select></div>
-   <div class="f"><label for="rf">Responsável pela fabricação <i>*</i></label><select id="rf" name="resp_fab" required><option value="">Selecione o responsável</option><option>Lucas Fernandes</option><option>André Oliveira</option></select></div>
+   <div class="f">
+    <label for="rm">Responsável pela manutenção <i>*</i></label>
+    <input type="text" id="rm" name="resp_manut" placeholder=" Nome do Responsável" disabled>
+</div>
+ <div class="f"><label for="tipo">Tipo <i>*</i></label><select id="tipo" name="tipo" required><option value="">Selecione o tipo</option><option>Montagem</option><option>Solda</option><option>Usinagem</option><option>Furadeira</option></select></div>
   </div></section>
+  
+  
   <section class="card"><h2>Anexo do laudo</h2><label class="drop"><span data-ic="up"></span><span id="prev">Adicionar imagem ou foto (opcional)</span><input id="file" type="file" accept="image/*" hidden></label></section>
+  
  </div>
+
+ 
+ <!-- MODIFICACAO POR CAIO BONONI CASO DER TUDO ERRADO -->
+  
+<section class="card sgd-corretiva-ocorrencia-container">
+
+    <h2>
+        <span data-ic="file"></span>
+        Registro da Ocorrência
+    </h2>
+
+    <!-- PRIMEIRA LINHA -->
+    <div class="sgd-corretiva-ocorrencia-layout">
+
+        <!-- INFORMAÇÕES DA FALHA -->
+        <div class="sgd-corretiva-ocorrencia-informacoes">
+
+            <p class="sub card__lead">Informações da falha</p>
+
+            <div class="f">
+                <label for="descricao_falha">
+                    Descrição da falha encontrada <i>*</i>
+                </label>
+
+                <textarea
+                    id="descricao_falha"
+                    name="descricao_falha"
+                    maxlength="1500"
+                    required
+                    placeholder="Descreva detalhadamente o problema identificado no dispositivo...">
+                </textarea>
+            </div>
+
+            <div class="sgd-corretiva-ocorrencia-controle-voz">
+
+                <button type="button" class="btn pri" id="btnVozOcorrencia">
+                    <span data-ic="mic"></span>
+                    Ditar descrição por voz
+                </button>
+
+                <button type="button" class="btn" id="btnAnalisarOcorrencia">
+                    Analisar com IA
+                </button>
+
+            </div>
+
+            <small id="statusVozOcorrencia"></small>
+
+        </div>
+
+        <!-- FOTO DA SITUAÇÃO ATUAL -->
+        <div class="sgd-corretiva-ocorrencia-fotografias">
+
+            <p class="sub card__lead">Foto da Situação Atual</p>
+
+            <div class="sgd-corretiva-ocorrencia-botoes-foto">
+
+                <label
+                    class="sgd-corretiva-ocorrencia-area-upload"
+                    for="cameraOcorrencia">
+
+                    <span data-ic="camera"></span>
+                    <strong>Tirar foto</strong>
+                    <small>Utilizar a câmera do dispositivo</small>
+
+                    <input
+                        type="file"
+                        id="cameraOcorrencia"
+                        accept="image/*"
+                        capture="environment"
+                        hidden>
+                </label>
+
+                <label
+                    class="sgd-corretiva-ocorrencia-area-upload"
+                    for="uploadOcorrencia">
+
+                    <span data-ic="image-plus"></span>
+                    <strong>Enviar imagem</strong>
+                    <small>Selecionar uma foto existente</small>
+
+                    <input
+                        type="file"
+                        id="uploadOcorrencia"
+                        accept="image/*"
+                        multiple
+                        hidden>
+                </label>
+
+            </div>
+
+            <div
+                id="previewOcorrencia"
+                class="sgd-corretiva-ocorrencia-visualizacao">
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SUGESTÕES DA IA -->
+    <div class="sgd-corretiva-ocorrencia-ia">
+
+        <p class="sub card__lead">
+            Sugestões da IA — revise antes de confirmar
+        </p>
+
+        <div class="sgd-corretiva-ocorrencia-ia-layout">
+
+            <div class="f">
+                <label for="componente_afetado">
+                    Componente afetado
+                </label>
+
+                <input
+                    type="text"
+                    id="componente_afetado"
+                    name="componente_afetado"
+                    placeholder="Componente identificado pela análise">
+            </div>
+
+            <div class="f">
+                <label for="tipo_falha">
+                    Tipo de falha
+                </label>
+
+                <select id="tipo_falha" name="tipo_falha">
+                    <option value="">Selecione o tipo de falha</option>
+                    <option>Desgaste</option>
+                    <option>Quebra</option>
+                    <option>Trinca</option>
+                    <option>Folga</option>
+                    <option>Dano operacional</option>
+                    <option>Não conformidade dimensional</option>
+                    <option>Outro</option>
+                </select>
+            </div>
+
+            <div class="f">
+                <label for="causas_sugeridas">
+                    Possíveis causas raízes
+                </label>
+
+                <textarea
+                    id="causas_sugeridas"
+                    name="causas_sugeridas"
+                    maxlength="1500"
+                    placeholder="Possíveis causas sugeridas pela IA...">
+                </textarea>
+            </div>
+
+        </div>
+
+        <small class="sgd-corretiva-ocorrencia-aviso">
+            As sugestões são preliminares e devem ser avaliadas pelo responsável.
+            Nenhuma causa raiz será considerada comprovada automaticamente.
+        </small>
+
+    </div>
+
+</section>
+ 
  <div class="split">
   <section class="card"><h2><span data-ic="wrench"></span>Análise de causa raiz — espinha de peixe (Ishikawa)</h2><p class="sub card__lead">Utilize o método 6M para identificar a causa raiz da falha.</p><div class="fish" id="fish"></div></section>
   <section class="card"><h2>IA assistente de causa raiz</h2><p class="sub ia__lead">Descreva o que aconteceu e deixe a IA resumir o ocorrido e sugerir possíveis causas raiz.</p>
@@ -20,7 +187,72 @@
    <textarea id="relato" name="relato" hidden placeholder="Descreva o que aconteceu…" aria-label="Relato"></textarea>
    <div class="card ia__summary"><b>Resumo sugerido pela IA</b><p class="sub" id="resumo">Após a análise do relato, a IA irá sugerir possíveis causas raiz com base no histórico e nas boas práticas da ferramentaria.</p></div></div></section>
  </div>
- <section class="card"><div class="head head--flush"><h2><span data-ic="wrench"></span>Ações corretivas</h2><span class="sp"></span><button type="button" id="addA" class="btn sm"><span data-ic="plus"></span>Adicionar ação</button></div><div id="acts" class="actions-list" data-rows></div></section>
+ <section class="card"><div class="head head--flush"><h2><span data-ic="wrench"></span>Plano de Ação Corretiva</h2><span class="sp"></span><button type="button" id="addA" class="btn sm"><span data-ic="plus"></span>Adicionar ação</button></div><div id="acts" class="actions-list" data-rows></div></section>
+
+ <!-- MODIFICACAO POR CAIO BONONI CASO DER TUDO ERRADO -->
+ <!-- FOTO DO TRABALHO REALIZADO -->
+<section class="card sgd-corretiva-foto-trabalho">
+
+    <h2>
+        <span data-ic="camera"></span>
+        Foto do Trabalho Realizado
+    </h2>
+
+    <div class="sgd-corretiva-ocorrencia-fotografias">
+
+        <div class="sgd-corretiva-ocorrencia-botoes-foto">
+
+            <!-- CÂMERA -->
+            <label
+                class="sgd-corretiva-ocorrencia-area-upload"
+                for="cameraTrabalho">
+
+                <span data-ic="camera"></span>
+                <strong>Tirar foto</strong>
+                <small>Utilizar a câmera do dispositivo</small>
+
+                <input
+                    type="file"
+                    id="cameraTrabalho"
+                    accept="image/*"
+                    capture="environment"
+                    hidden>
+            </label>
+
+            <!-- UPLOAD -->
+            <label
+                class="sgd-corretiva-ocorrencia-area-upload"
+                for="uploadTrabalho">
+
+                <span data-ic="image-plus"></span>
+                <strong>Enviar imagem</strong>
+                <small>Selecionar uma foto existente</small>
+
+                <input
+                    type="file"
+                    id="uploadTrabalho"
+                    accept="image/*"
+                    multiple
+                    hidden>
+            </label>
+
+        </div>
+
+        <!-- PRÉ-VISUALIZAÇÃO -->
+        <div
+            id="previewTrabalho"
+            class="sgd-corretiva-ocorrencia-visualizacao">
+        </div>
+
+    </div>
+
+</section>
+
+ <!-- MODIFICACAO POR CAIO BONONI CASO DER TUDO ERRADO -->
+
+
+
+
  <section class="card"><div class="f"><label for="obs">Outras informações</label><textarea id="obs" name="obs" placeholder="Observações, anexos ou registros adicionais"></textarea></div></section>
  <div class="actions"><a class="btn" href="corretiva.html"><span data-ic="x"></span>Cancelar</a><button class="btn" type="submit"><span data-ic="save"></span>Salvar laudo</button><button class="btn pri" type="button" id="concluir"><span data-ic="file"></span>Concluir e enviar</button></div>
 </form></main></div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../js/layout.js"></script><script>
@@ -66,4 +298,196 @@ if(atual){const d=atual.dados;SGD.fill(f,d);$('#rc').textContent=(d.causa_raiz||
  (d.acoes&&d.acoes.length?d.acoes:[{}]).forEach(act);
  if(!Laudos.editavel(atual))SGD.bloquear(f,Laudos.msgLeitura(atual));else if(atual.status==='reprovado')SGD.aviso(f,Laudos.msgReprovado(atual))}
 else{act();if(Laudos.vagas(T)<=0)SGD.bloquear(f,Laudos.msgLimite(T))}
+
+
+
+
+/* MODIFICACAO POR CAIO BONONI CASO DE TUDO ERRADO */
+
+document.addEventListener("DOMContentLoaded", () => {
+    const sessao = Auth.sessao();
+
+    if (sessao) {
+        document.getElementById("rm").value = sessao.nome;
+    }
+});
+
+
+/* ==========================================
+   REGISTRO DA OCORRÊNCIA
+========================================== */
+
+/* FOTOGRAFIAS */
+
+let fotosOcorrencia = [];
+
+const previewOcorrencia = $('#previewOcorrencia');
+
+function atualizarFotosOcorrencia() {
+    previewOcorrencia.innerHTML = '';
+
+    fotosOcorrencia.forEach((foto, index) => {
+        const item = document.createElement('div');
+        item.className = 'sgd-corretiva-ocorrencia-foto-item';
+
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(foto);
+        img.alt = 'Foto da situação atual';
+
+        const remover = document.createElement('button');
+        remover.type = 'button';
+        remover.className = 'sgd-corretiva-ocorrencia-remover-foto';
+        remover.textContent = '×';
+        remover.title = 'Remover fotografia';
+
+        remover.onclick = () => {
+            fotosOcorrencia.splice(index, 1);
+            atualizarFotosOcorrencia();
+        };
+
+        item.append(img, remover);
+        previewOcorrencia.appendChild(item);
+    });
+}
+
+function adicionarFotosOcorrencia(arquivos) {
+    [...arquivos].forEach(foto => {
+        if (foto.type.startsWith('image/')) {
+            fotosOcorrencia.push(foto);
+        }
+    });
+
+    atualizarFotosOcorrencia();
+}
+
+$('#cameraOcorrencia').onchange = e => {
+    adicionarFotosOcorrencia(e.target.files);
+    e.target.value = '';
+};
+
+$('#uploadOcorrencia').onchange = e => {
+    adicionarFotosOcorrencia(e.target.files);
+    e.target.value = '';
+};
+
+
+/* RECONHECIMENTO DE VOZ */
+
+$('#btnVozOcorrencia').onclick = () => {
+
+    const R = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!R) {
+        return SGD.toast('Reconhecimento de voz não suportado neste navegador.');
+    }
+
+    const reconhecimento = new R();
+
+    reconhecimento.lang = 'pt-BR';
+    reconhecimento.continuous = false;
+    reconhecimento.interimResults = false;
+
+    $('#statusVozOcorrencia').textContent = 'Ouvindo... fale sobre a falha identificada.';
+
+    reconhecimento.onresult = e => {
+        const texto = e.results[0][0].transcript;
+
+        $('#descricao_falha').value +=
+            ($('#descricao_falha').value ? ' ' : '') + texto;
+
+        $('#statusVozOcorrencia').textContent =
+            'Descrição registrada. Enviando para análise...';
+
+        analisarOcorrenciaIA();
+    };
+
+    reconhecimento.onerror = () => {
+        $('#statusVozOcorrencia').textContent =
+            'Não foi possível reconhecer a fala. Tente novamente.';
+    };
+
+    reconhecimento.onend = () => {
+        if ($('#statusVozOcorrencia').textContent === 'Ouvindo... fale sobre a falha identificada.') {
+            $('#statusVozOcorrencia').textContent = '';
+        }
+    };
+
+    reconhecimento.start();
+};
+
+
+/* ANÁLISE DA IA */
+
+async function analisarOcorrenciaIA() {
+
+    const descricao = $('#descricao_falha').value.trim();
+
+    if (!descricao) {
+        return SGD.toast('Descreva a falha antes de solicitar a análise.');
+    }
+
+    const botao = $('#btnAnalisarOcorrencia');
+
+    botao.disabled = true;
+    botao.textContent = 'Analisando...';
+
+    try {
+
+        /*
+          INTEGRAÇÃO COM A IA
+
+          O endpoint deverá retornar:
+          {
+              "componente": "Componente identificado",
+              "tipo_falha": "Desgaste",
+              "causas": [
+                  "Possível causa 1",
+                  "Possível causa 2"
+              ]
+          }
+        */
+
+        const resposta = await fetch('/api/ia/ocorrencia', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ descricao })
+        });
+
+        if (!resposta.ok) {
+            throw new Error('Não foi possível realizar a análise.');
+        }
+
+        const resultado = await resposta.json();
+
+        $('#componente_afetado').value =
+            resultado.componente || '';
+
+        $('#tipo_falha').value =
+            resultado.tipo_falha || '';
+
+        $('#causas_sugeridas').value =
+            Array.isArray(resultado.causas)
+                ? resultado.causas.join('\n')
+                : resultado.causas || '';
+
+        $('#statusVozOcorrencia').textContent =
+            'Análise concluída. Revise as sugestões antes de prosseguir.';
+
+    } catch (erro) {
+
+        SGD.toast('Não foi possível conectar à IA. Verifique a integração.');
+
+    } finally {
+
+        botao.disabled = false;
+        botao.textContent = 'Analisar com IA';
+
+    }
+}
+
+$('#btnAnalisarOcorrencia').onclick = analisarOcorrenciaIA;
+
+/* MODIFICACAO POR CAIO BONONI CASO DE TUDO ERRADO */
 </script></body></html>

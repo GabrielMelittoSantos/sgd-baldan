@@ -30,6 +30,9 @@ body { background: var(--bg); }
 /* Fundo da máquina: imagem (se definida) sobre um degradê industrial */
 .hero__machine {
   position: absolute; inset: 0;
+  display: flex;
+  align-items: center;
+
   background:
     linear-gradient(180deg, rgba(5,10,19,.55) 0%, rgba(5,10,19,.1) 40%, rgba(5,10,19,.85) 100%),
     var(--hero-image) center / cover no-repeat,
@@ -165,7 +168,7 @@ body { background: var(--bg); }
 
 .subtitle {
   margin: .55rem 0 2rem;
-  font-size: 1.05rem;
+  font-size: 1.20rem;
   color: var(--muted);
 }
 

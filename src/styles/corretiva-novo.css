@@ -17,3 +17,144 @@
 .cause { display: grid; grid-template-columns: 1fr auto; gap: .3rem; align-items: center; }
 .cause .btn-icon { width: 28px; height: 28px; }
 .action { display: grid; grid-template-columns: 1fr auto; gap: .6rem; align-items: start; }
+
+/* NOVO */
+
+/* ==========================================
+   SGD - REGISTRO DA OCORRÊNCIA
+   ORGANIZAÇÃO E ESPAÇAMENTO
+========================================== */
+
+.sgd-corretiva-ocorrencia-container {
+    margin-bottom: 14px;
+    box-sizing: border-box;
+}
+
+/* Primeira linha */
+
+.sgd-corretiva-ocorrencia-layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
+    margin-top: 18px;
+    align-items: start;
+}
+
+.sgd-corretiva-ocorrencia-informacoes,
+.sgd-corretiva-ocorrencia-fotografias {
+    min-width: 0;
+}
+
+.sgd-corretiva-ocorrencia-informacoes textarea {
+    min-height: 115px;
+    resize: vertical;
+}
+
+/* Títulos secundários */
+
+.sgd-corretiva-ocorrencia-informacoes .sub,
+.sgd-corretiva-ocorrencia-fotografias .sub,
+.sgd-corretiva-ocorrencia-ia .sub {
+    font: 600 1.05rem var(--font-title);
+    margin-bottom: 12px;
+}
+
+/* Botões de voz */
+
+.sgd-corretiva-ocorrencia-controle-voz {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 10px;
+}
+
+#statusVozOcorrencia {
+    display: block;
+    margin-top: 8px;
+    color: #8fa3bc;
+    font-size: 11px;
+}
+
+/* Fotografias */
+
+.sgd-corretiva-ocorrencia-botoes-foto {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.sgd-corretiva-ocorrencia-area-upload {
+    min-height: 145px;
+    box-sizing: border-box;
+    padding: 16px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    border: 1px dashed #e50920;
+    border-radius: 9px;
+    background: rgba(229, 9, 32, 0.025);
+
+    cursor: pointer;
+    text-align: center;
+    transition: .2s;
+}
+
+.sgd-corretiva-ocorrencia-area-upload:hover {
+    background: rgba(229, 9, 32, 0.07);
+    border-color: #ff263d;
+}
+
+.sgd-corretiva-ocorrencia-area-upload [data-ic] {
+    color: #e50920;
+    width: 23px;
+    height: 23px;
+}
+
+.sgd-corretiva-ocorrencia-area-upload strong {
+    color: #fff;
+    font-size: 12px;
+}
+
+.sgd-corretiva-ocorrencia-area-upload small {
+    color: #8fa3bc;
+    font-size: 11px;
+}
+
+/* Sugestões da IA */
+
+.sgd-corretiva-ocorrencia-ia {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid #26374d;
+}
+
+.sgd-corretiva-ocorrencia-ia-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.3fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.sgd-corretiva-ocorrencia-ia-layout .f {
+    min-width: 0;
+}
+
+.sgd-corretiva-ocorrencia-ia-layout textarea {
+    min-height: 85px;
+    resize: vertical;
+}
+
+.sgd-corretiva-ocorrencia-aviso {
+    display: block;
+    margin-top: 12px;
+    color: #8fa3bc;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+

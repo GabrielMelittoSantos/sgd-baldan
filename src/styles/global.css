@@ -69,7 +69,7 @@ svg { display: block; width: 20px; height: 20px; fill: none; stroke: currentColo
 :focus-visible { outline: 2px solid var(--blue-link); outline-offset: 2px; }
 h1 { font: 700 1.9rem var(--font-title); }
 h2 { font: 600 1.05rem var(--font-title); }
-.sub { color: var(--muted); margin-top: .3rem; }
+.sub { color: var(--text); margin-top: .3rem;font-size:1.2rem }
 
 /* ---------- Estrutura (menu lateral + topo) ---------- */
 .app { display: grid; grid-template-columns: var(--sidebar-w) 1fr; min-height: 100vh; }
@@ -83,9 +83,13 @@ h2 { font: 600 1.05rem var(--font-title); }
 .logo__mark { color: var(--red); }
 
 .top { display: flex; align-items: center; gap: 1rem; padding: .9rem 1.6rem; border-bottom: 1px solid var(--line); }
-.top .sgd { font: italic 800 2rem var(--font-brand); }
-.top .sgd i { color: var(--red); font-style: normal; }
-.top .desc { font: 500 .8rem var(--font-title); text-transform: uppercase; color: #a9bfdc; letter-spacing: .03em; border-left: 1px solid var(--line); padding-left: 1rem; }
+.top .sgd { font: italic 800 2rem var(--font-brand);display:flex;align-items:center;gap: 0.4rem; }
+.sgd img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.top .desc { font: 500 .8rem var(--font-title); text-transform: uppercase; color: #a9bfdc; letter-spacing: .03em; border-left: 1px solid var(--line); padding: 1rem; }
 .sp { flex: 1; }
 .bell { position: relative; background: none; border: 0; }
 .bell b { position: absolute; top: -6px; right: -6px; background: var(--red); border-radius: 9px; font-size: .65rem; padding: 1px 5px; }
