@@ -19,7 +19,14 @@
  </div>
  <div class="split split--drawing">
   <section class="card"><h2><span data-ic="file"></span>Desenho técnico</h2>
-   <label class="drop"><span data-ic="up"></span><b>Importar desenho boleado</b><span id="prev">Nenhum desenho importado. O desenho servirá de referência para as medidas.</span><input id="file" type="file" accept="image/*,.pdf" hidden></label></section>
+  <label class="drop">
+    <span data-ic="up"></span>
+    <b>Importar desenho boleado</b>
+    <span id="prev">
+        Nenhum desenho importado...
+    </span>
+    <input id="file" type="file" hidden>
+</label>
   <section class="card"><div class="head head--flush"><h2>Medidas / especificações</h2><span class="sp"></span><button type="button" id="addM" class="btn sm"><span data-ic="plus"></span>Adicionar medida</button></div>
    <div class="tw mt"><table class="tbl"><thead><tr><th>Nº</th><th>Descrição</th><th>Especificação</th><th>Mínimo</th><th>Máximo</th><th>Método / instrumento</th><th>Medição</th><th>Aprovado</th><th>Reprovado</th><th><span class="sr-only">Remover</span></th></tr></thead><tbody id="medidas" data-rows></tbody></table></div></section>
  </div>
