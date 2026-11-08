@@ -78,10 +78,10 @@ h2 { font: 600 1.05rem var(--font-title); }
 .nav { display: flex; gap: .8rem; align-items: center; padding: .8rem 1rem; border-radius: 10px; color: var(--text-soft); border: 1px solid transparent; }
 .nav:hover { background: var(--panel-2); }
 .nav.on { background: color-mix(in srgb, var(--acc) 14%, transparent); border-color: color-mix(in srgb, var(--acc) 55%, transparent); color: var(--text); }
-.logo { margin-top: auto; font: italic 800 1.1rem var(--font-brand); padding: 1rem; }
-.logo small { display: block; font: 400 .7rem var(--font-body); color: var(--muted); }
-.logo__mark { color: var(--red); }
-
+.logo { margin-top: auto; font: italic 800 1.5rem var(--font-brand); padding: 1rem;}
+.logo small { display: block; font: 400 .9rem var(--font-body); color: var(--muted); }
+.logo__mark {width: 30px;}
+.boxLogo{display: flex; align-items: center;gap: 0.5rem;}
 .top { display: flex; align-items: center; gap: 1rem; padding: .9rem 1.6rem; border-bottom: 1px solid var(--line); }
 .top .sgd { font: italic 800 2rem var(--font-brand);display:flex;align-items:center;gap: 0.4rem; }
 .sgd img {
