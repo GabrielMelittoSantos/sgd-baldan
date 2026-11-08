@@ -1,70 +1,1106 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SGD • Novo laudo de Preventiva</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800&family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../styles/global.css"><link rel="stylesheet" href="../styles/liberacao-novo.css"></head><body class="t-blue"><div class="app"><aside class="side" id="side"></aside><div><header class="top" id="top"></header><main><form id="f" class="page-form" novalidate>
- <a class="back" href="preventiva.html"><span data-ic="back"></span>Voltar</a>
- <div class="head"><span class="badge-ic" data-ic="file"></span><div><h1>Novo laudo de Preventiva</h1><p class="sub">Preencha as informações do laudo conforme o desenho técnico e valide o dispositivo.</p></div></div>
- <div class="split">
-  <section class="card"><h2><span data-ic="file"></span>Informações gerais</h2><div class="fg">
-   <div class="f"><label for="cod">Código do dispositivo <i>*</i></label><input id="cod" name="codigo" placeholder="Ex.: DMP010100" required></div>
-   <div class="f"><label for="prod">Produto <i>*</i></label><select id="prod" name="produto" required><option value="">Selecione o produto</option><option>Plataforma Dianteira</option><option>Base de Corte</option><option>Suporte Lateral</option></select></div>
-   <div class="f"><label for="dt">Data da validação <i>*</i></label><input id="dt" name="data" type="date" required></div>
-   <div class="f"><label for="os">Ordem de serviço <i>*</i></label><input id="os" name="os" placeholder="Ex.: OS-000123" required></div>
-   <div class="f"><label for="conf">Conferente <i>*</i></label><select id="conf" name="conferente" required><option value="">Selecione o conferente</option><option>Carlos Silva</option><option>Rafael Costa</option></select></div>
-   <div class="f"><label for="rp">Responsável projeto <i>*</i></label><select id="rp" name="resp_projeto" required><option value="">Selecione o responsável</option><option>Juliano Pereira</option><option>Thiago Martins</option></select></div>
-   <div class="f"><label for="rf">Responsável fabricação <i>*</i></label><select id="rf" name="resp_fab" required><option value="">Selecione o responsável</option><option>Lucas Fernandes</option><option>André Oliveira</option></select></div>
-   <div class="f"><label for="tipo">Tipo <i>*</i></label><select id="tipo" name="tipo" required><option value="">Selecione o tipo</option><option>Montagem</option><option>Solda</option><option>Usinagem</option><option>Furadeira</option></select></div>
-  </div></section>
-  <!--<section class="card"><h2>Amostra</h2>
-   <label class="radio"><input type="radio" name="amostra" value="liberacao" checked>Liberação</label>
-   <label class="radio"><input type="radio" name="amostra" value="corretiva">Corretiva</label>
-   <label class="radio"><input type="radio" name="amostra" value="preventiva">Preventiva</label></section>-->
- </div>
- <div class="split split--drawing">
-  <section class="card"><h2><span data-ic="file"></span>Desenho técnico</h2>
-  <label class="drop">
-    <span data-ic="up"></span>
-    <b>Importar desenho boleado</b>
-    <span id="prev">
-        Nenhum desenho importado...
-    </span>
-    <input id="file" type="file" hidden>
-</label>
-  <section class="card"><div class="head head--flush"><h2>Medidas / especificações</h2><span class="sp"></span><button type="button" id="addM" class="btn sm"><span data-ic="plus"></span>Adicionar medida</button></div>
-   <div class="tw mt"><table class="tbl"><thead><tr><th>Nº</th><th>Descrição</th><th>Especificação</th><th>Mínimo</th><th>Máximo</th><th>Método / instrumento</th><th>Medição</th><th>Aprovado</th><th>Reprovado</th><th><span class="sr-only">Remover</span></th></tr></thead><tbody id="medidas" data-rows></tbody></table></div></section>
- </div>
- <section class="card"><div class="head head--flush"><h2>Checklist</h2><span class="sp"></span><button type="button" id="addC" class="btn sm"><span data-ic="plus"></span>Adicionar item</button></div>
-  <div class="tw mt"><table class="tbl"><thead><tr><th>Nº</th><th>Descrição</th><th>Resultado</th><th><span class="sr-only">Remover</span></th></tr></thead><tbody id="check" data-rows></tbody></table></div></section>
- <div class="actions"><a class="btn" href="preventiva.html"><span data-ic="x"></span>Cancelar</a><button class="btn" type="submit"><span data-ic="save"></span>Salvar laudo</button><button class="btn pri" type="button" id="concluir"><span data-ic="file"></span>Concluir e enviar</button></div>
-</form></main></div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../js/layout.js"></script><script>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>SGD • Novo laudo de Preventiva</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800&family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../styles/global.css">
+  <link rel="stylesheet" href="../styles/liberacao-novo.css">
+
+  <style>
+    /* Campos calculados automaticamente */
+    .tbl .limite-auto {
+      background: #f1f5f9;
+      color: #64748b;
+      font-weight: 600;
+      cursor: not-allowed;
+    }
+
+    /* Resultado da medição */
+    .resultado-medida {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .resultado-medida.pendente {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .resultado-medida.aprovado {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .resultado-medida.reprovado {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+  </style>
+</head>
+
+<body class="t-blue">
+
+<div class="app">
+
+  <aside class="side" id="side"></aside>
+
+  <div>
+
+    <header class="top" id="top"></header>
+
+    <main>
+
+      <form id="f" class="page-form" novalidate>
+
+        <a class="back" href="preventiva.html">
+          <span data-ic="back"></span>
+          Voltar
+        </a>
+
+        <!-- CABEÇALHO -->
+        <div class="head">
+
+          <span class="badge-ic" data-ic="file"></span>
+
+          <div>
+            <h1>Novo laudo de Preventiva</h1>
+            <p class="sub">
+              Preencha as informações do laudo conforme o desenho técnico e valide o dispositivo.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- INFORMAÇÕES GERAIS -->
+        <div class="split">
+
+          <section class="card">
+
+            <h2>
+              <span data-ic="file"></span>
+              Informações gerais
+            </h2>
+
+            <div class="fg">
+
+              <div class="f">
+                <label for="cod">Código do dispositivo <i>*</i></label>
+                <input id="cod" name="codigo" placeholder="Ex.: DMP010100" required>
+              </div>
+
+              <div class="f">
+                <label for="prod">Produto <i>*</i></label>
+
+                <select id="prod" name="produto" required>
+                  <option value="">Selecione o produto</option>
+                  <option>Plataforma Dianteira</option>
+                  <option>Base de Corte</option>
+                  <option>Suporte Lateral</option>
+                </select>
+              </div>
+
+              <div class="f">
+                <label for="dt">Data da validação <i>*</i></label>
+                <input id="dt" name="data" type="date" required>
+              </div>
+
+              <div class="f">
+                <label for="os">Ordem de serviço <i>*</i></label>
+                <input id="os" name="os" placeholder="Ex.: OS-000123" required>
+              </div>
+
+              <div class="f">
+                <label for="conf">Conferente <i>*</i></label>
+
+                <select id="conf" name="conferente" required>
+                  <option value="">Selecione o conferente</option>
+                  <option>Carlos Silva</option>
+                  <option>Rafael Costa</option>
+                </select>
+              </div>
+
+              <div class="f">
+                <label for="rp">Responsável projeto <i>*</i></label>
+
+                <select id="rp" name="resp_projeto" required>
+                  <option value="">Selecione o responsável</option>
+                  <option>Juliano Pereira</option>
+                  <option>Thiago Martins</option>
+                </select>
+              </div>
+
+              <div class="f">
+                <label for="rf">Responsável fabricação <i>*</i></label>
+
+                <select id="rf" name="resp_fab" required>
+                  <option value="">Selecione o responsável</option>
+                  <option>Lucas Fernandes</option>
+                  <option>André Oliveira</option>
+                </select>
+              </div>
+
+              <div class="f">
+                <label for="tipo">Tipo <i>*</i></label>
+
+                <select id="tipo" name="tipo" required>
+                  <option value="">Selecione o tipo</option>
+                  <option>Montagem</option>
+                  <option>Solda</option>
+                  <option>Usinagem</option>
+                  <option>Furadeira</option>
+                </select>
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+        <!-- DESENHO TÉCNICO -->
+        <div class="split split--drawing">
+
+          <section class="card">
+
+            <h2>
+              <span data-ic="file"></span>
+              Desenho técnico
+            </h2>
+
+            <label class="drop">
+
+              <span data-ic="up"></span>
+
+              <b>Importar desenho boleado</b>
+
+              <span id="prev">
+                Nenhum desenho importado...
+              </span>
+
+              <input id="file" type="file" accept="image/*,.pdf" hidden>
+
+            </label>
+
+          </section>
+
+        </div>
+
+        <!-- MEDIDAS E ESPECIFICAÇÕES -->
+        <section class="card">
+
+          <div class="head head--flush">
+
+            <h2>Medidas / especificações</h2>
+
+            <span class="sp"></span>
+
+            <button type="button" id="addM" class="btn sm">
+              <span data-ic="plus"></span>
+              Adicionar medida
+            </button>
+
+          </div>
+
+          <div class="tw mt">
+
+            <table class="tbl">
+
+              <thead>
+                <tr>
+                  <th>Nº</th>
+                  <th>Descrição</th>
+                  <th>Especificação</th>
+                  <th>Mínimo</th>
+                  <th>Máximo</th>
+                  <th>Método / instrumento</th>
+                  <th>Medição</th>
+                  <th>Resultado</th>
+                  <th>
+                    <span class="sr-only">Remover</span>
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody id="medidas" data-rows></tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+        <!-- CHECKLIST -->
+        <section class="card">
+
+          <div class="head head--flush">
+
+            <h2>Checklist</h2>
+
+            <span class="sp"></span>
+
+            <button type="button" id="addC" class="btn sm">
+              <span data-ic="plus"></span>
+              Adicionar item
+            </button>
+
+          </div>
+
+          <div class="tw mt">
+
+            <table class="tbl">
+
+              <thead>
+                <tr>
+                  <th>Nº</th>
+                  <th>Descrição</th>
+                  <th>Resultado</th>
+                  <th>
+                    <span class="sr-only">Remover</span>
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody id="check" data-rows></tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+        <!-- AÇÕES -->
+        <div class="actions">
+
+          <a class="btn" href="preventiva.html">
+            <span data-ic="x"></span>
+            Cancelar
+          </a>
+
+          <button class="btn" type="submit">
+            <span data-ic="save"></span>
+            Salvar laudo
+          </button>
+
+          <button class="btn pri" type="button" id="concluir">
+            <span data-ic="file"></span>
+            Concluir e enviar
+          </button>
+
+        </div>
+
+      </form>
+
+    </main>
+
+  </div>
+
+</div>
+
+<script src="../services/auth.js"></script>
+<script src="../services/laudos.js"></script>
+<script src="../js/layout.js"></script>
+
+<script>
+
 SGD.shell('dispositivos');
-const T='preventiva',$=s=>document.querySelector(s),f=$('#f'),M=$('#medidas'),C=$('#check'),K=['desc','espec','min','max','metodo','medicao'];
-const params=new URLSearchParams(location.search);let uid=0,atual=null;
-const renum=b=>[...b.rows].forEach((r,i)=>r.cells[0].textContent=i+1);
-const del=SGD.ic('x');
-const mrow=(m={})=>{const n=++uid;M.insertAdjacentHTML('beforeend',`<tr><td></td>${K.map(k=>`<td><input aria-label="${k}" value="${SGD.esc(m[k]||'')}"></td>`).join('')}<td><input type="radio" name="ap${n}" value="a" aria-label="Aprovado"${m.res==='a'?' checked':''}></td><td><input type="radio" name="ap${n}" value="r" aria-label="Reprovado"${m.res==='r'?' checked':''}></td><td><button type="button" class="btn-icon" data-del aria-label="Remover medida">${del}</button></td></tr>`);renum(M)};
-const crow=(c={})=>{const n=++uid;C.insertAdjacentHTML('beforeend',`<tr><td></td><td>${SGD.esc(c.desc)}</td><td><div class="res">${['OK','NÃO OK','N/A'].map(o=>`<label><input type="radio" name="c${n}" value="${o}"${(c.res||'OK')===o?' checked':''}>${o}</label>`).join('')}</div></td><td><button type="button" class="btn-icon" data-del aria-label="Remover item">${del}</button></td></tr>`);renum(C)};
-const dados=()=>({...SGD.simple(f),
- medidas:[...M.rows].map(r=>({...Object.fromEntries(K.map((k,i)=>[k,r.cells[i+1].firstChild.value])),res:(r.querySelector('input:checked')||{}).value||''})),
- checklist:[...C.rows].map(r=>({desc:r.cells[1].textContent,res:r.querySelector('input:checked').value}))});
 
-f.addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;const tb=b.closest('tbody');
- if(tb.rows.length<=1)return SGD.toast('Mantenha ao menos uma linha.');b.closest('tr').remove();renum(tb)});
-$('#addM').onclick=()=>mrow();
-$('#addC').onclick=()=>{const t=(prompt('Descrição do item')||'').trim();if(t)crow({desc:t})};
-$('#file').onchange=e=>{const x=e.target.files[0];if(x)$('#prev').innerHTML=`<img alt="Desenho técnico" src="${URL.createObjectURL(x)}">`};
+const T = 'preventiva';
 
-function gravar(status){
- const req=status==='pendente'?[...f.querySelectorAll('[required]')]:[$('#cod')];let ok=true;
- req.forEach(i=>{const b=!i.value.trim();i.classList.toggle('bad',b);if(b)ok=false});
- if(!ok)return SGD.toast('Preencha os campos obrigatórios.');
- try{Laudos.salvar({id:atual&&atual.id,tipo:T,status,dados:dados()});SGD.toast(status==='pendente'?'Laudo enviado para aprovação do gerente':'Laudo salvo');setTimeout(()=>location.href='preventiva.html',900)}
- catch(err){SGD.toast(err.message,4500)}}
-f.onsubmit=e=>{e.preventDefault();gravar('andamento')};
-$('#concluir').onclick=()=>gravar('pendente');
+const $ = s => document.querySelector(s);
 
-const id=params.get('id');
-if(id){atual=Laudos.obter(id);if(!atual||atual.tipo!==T)location.replace('preventiva.html')}
-if(atual){const d=atual.dados;SGD.fill(f,d);(d.medidas||[]).forEach(mrow);(d.checklist||[]).forEach(crow);
- if(!Laudos.editavel(atual))SGD.bloquear(f,Laudos.msgLeitura(atual));else if(atual.status==='reprovado')SGD.aviso(f,Laudos.msgReprovado(atual))}
-else{for(let i=0;i<4;i++)mrow();['Conferir esquadro de todos os conjuntos','Aperto de todos os parafusos','Lubrificação de todos os componentes','Presença de solda em toda a solda (se aplicável)'].forEach(desc=>crow({desc}));
- if(params.get('cod'))$('#cod').value=params.get('cod');
- if(Laudos.vagas(T)<=0)SGD.bloquear(f,Laudos.msgLimite(T))}
-</script></body></html>
+const f = $('#f');
+const M = $('#medidas');
+const C = $('#check');
+
+const K = [
+  'desc',
+  'espec',
+  'min',
+  'max',
+  'metodo',
+  'medicao'
+];
+
+const params = new URLSearchParams(location.search);
+
+let uid = 0;
+let atual = null;
+
+const del = SGD.ic('x');
+
+
+// ==========================================
+// NUMERAÇÃO DAS LINHAS
+// ==========================================
+
+const renum = b => {
+  [...b.rows].forEach((r, i) => {
+    r.cells[0].textContent = i + 1;
+  });
+};
+
+
+// ==========================================
+// CONVERSÃO DE NÚMEROS
+// ==========================================
+
+function converterNumero(valor) {
+
+  const texto = String(valor || '').trim();
+
+  if (!texto) return NaN;
+
+  // Quando existe vírgula, considera-se o formato brasileiro.
+  const normalizado = texto.includes(',')
+    ? texto.replace(/\./g, '').replace(',', '.')
+    : texto;
+
+  return Number(normalizado);
+}
+
+
+// ==========================================
+// FORMATAÇÃO DOS LIMITES
+// ==========================================
+
+function formatarMedida(valor) {
+
+  return valor.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4
+  });
+
+}
+
+
+// ==========================================
+// CÁLCULO AUTOMÁTICO DAS MEDIDAS
+// ==========================================
+
+function atualizarLinha(row) {
+
+  if (!row) return;
+
+  const inputs = Object.fromEntries(
+
+    K.map((k, i) => [
+      k,
+      row.cells[i + 1].querySelector('input, select')
+    ])
+
+  );
+
+  const especificacao = inputs.espec.value.trim();
+
+  const minimo = row.cells[3].querySelector('input');
+  const maximo = row.cells[4].querySelector('input');
+
+  const resultado = row.querySelector('.resultado-medida');
+
+
+  // Limpa os limites anteriores.
+
+  minimo.value = '';
+  maximo.value = '';
+
+  resultado.textContent = 'Aguardando';
+
+  resultado.className = 'resultado-medida pendente';
+
+
+  // Aceita os formatos:
+  // 50 ± 0,5
+  // 50 +/- 0,5
+  // 50 ± 1
+  // 100,5 ± 0,2
+
+  const match = especificacao.match(
+    /^\s*(-?\d+(?:[.,]\d+)?)\s*(?:±|\+\/-)\s*(\d+(?:[.,]\d+)?)\s*$/
+  );
+
+
+  // Especificação inválida.
+
+  if (!match) return;
+
+
+  const nominal = converterNumero(match[1]);
+
+  const tolerancia = converterNumero(match[2]);
+
+
+  if (
+    !Number.isFinite(nominal) ||
+    !Number.isFinite(tolerancia) ||
+    tolerancia < 0
+  ) {
+    return;
+  }
+
+
+  // Cálculo dos limites.
+
+  const limiteMin = nominal - tolerancia;
+
+  const limiteMax = nominal + tolerancia;
+
+
+  minimo.value = formatarMedida(limiteMin);
+
+  maximo.value = formatarMedida(limiteMax);
+
+
+  // Verificação da medição.
+
+  const medicao = converterNumero(inputs.medicao.value);
+
+
+  if (
+    !inputs.medicao.value.trim() ||
+    !Number.isFinite(medicao)
+  ) {
+
+    resultado.textContent = 'Aguardando';
+
+    return;
+
+  }
+
+
+  // APROVADO.
+
+  if (
+    medicao >= limiteMin &&
+    medicao <= limiteMax
+  ) {
+
+    resultado.textContent = 'APROVADO';
+
+    resultado.className = 'resultado-medida aprovado';
+
+  }
+
+  // REPROVADO.
+
+  else {
+
+    resultado.textContent = 'REPROVADO';
+
+    resultado.className = 'resultado-medida reprovado';
+
+  }
+
+}
+
+
+// ==========================================
+// OPÇÕES DOS FILTROS
+// ==========================================
+
+const descricoes = [
+  'Altura',
+  'Largura',
+  'Comprimento',
+  'Diâmetro',
+  'Posição',
+  'Outros'
+];
+
+const metodos = [
+  'Paquímetro',
+  'Trena',
+  'Tridimensional',
+  'Outros'
+];
+
+
+function criarSelect(opcoes, valor) {
+
+  return `
+    <select aria-label="Selecionar opção">
+
+      <option value="">Selecione</option>
+
+      ${opcoes.map(op => `
+
+        <option
+          value="${SGD.esc(op)}"
+          ${valor === op ? 'selected' : ''}
+        >
+          ${SGD.esc(op)}
+        </option>
+
+      `).join('')}
+
+    </select>
+  `;
+
+}
+
+
+// ==========================================
+// CRIAR LINHA DE MEDIÇÃO
+// ==========================================
+
+const mrow = (m = {}) => {
+
+  const n = ++uid;
+
+  M.insertAdjacentHTML('beforeend', `
+
+    <tr>
+
+      <td></td>
+
+      <!-- DESCRIÇÃO -->
+
+      <td>
+        ${criarSelect(descricoes, m.desc || '')}
+      </td>
+
+      <!-- ESPECIFICAÇÃO -->
+
+      <td>
+
+        <input
+          type="text"
+          aria-label="Especificação"
+          placeholder="Ex.: 50 ± 0,5"
+          value="${SGD.esc(m.espec || '')}"
+        >
+
+      </td>
+
+      <!-- MÍNIMO AUTOMÁTICO -->
+
+      <td>
+
+        <input
+          type="text"
+          aria-label="Mínimo"
+          class="limite-auto"
+          readonly
+          tabindex="-1"
+        >
+
+      </td>
+
+      <!-- MÁXIMO AUTOMÁTICO -->
+
+      <td>
+
+        <input
+          type="text"
+          aria-label="Máximo"
+          class="limite-auto"
+          readonly
+          tabindex="-1"
+        >
+
+      </td>
+
+      <!-- MÉTODO / INSTRUMENTO -->
+
+      <td>
+        ${criarSelect(metodos, m.metodo || '')}
+      </td>
+
+      <!-- MEDIÇÃO -->
+
+      <td>
+
+        <input
+          type="text"
+          inputmode="decimal"
+          aria-label="Medição"
+          placeholder="Ex.: 50,2"
+          value="${SGD.esc(m.medicao || '')}"
+        >
+
+      </td>
+
+      <!-- RESULTADO AUTOMÁTICO -->
+
+      <td>
+
+        <span class="resultado-medida pendente">
+          Aguardando
+        </span>
+
+      </td>
+
+      <!-- REMOVER -->
+
+      <td>
+
+        <button
+          type="button"
+          class="btn-icon"
+          data-del
+          aria-label="Remover medida"
+        >
+          ${del}
+        </button>
+
+      </td>
+
+    </tr>
+
+  `);
+
+
+  const row = M.lastElementChild;
+
+  atualizarLinha(row);
+
+  renum(M);
+
+};
+
+
+// ==========================================
+// EVENTOS AUTOMÁTICOS DAS MEDIDAS
+// ==========================================
+
+// Atualiza quando o operador digitar.
+
+M.addEventListener('input', e => {
+
+  const row = e.target.closest('tr');
+
+  if (row) atualizarLinha(row);
+
+});
+
+
+// Atualiza quando selecionar uma opção.
+
+M.addEventListener('change', e => {
+
+  const row = e.target.closest('tr');
+
+  if (row) atualizarLinha(row);
+
+});
+
+
+// ==========================================
+// CRIAR LINHA DO CHECKLIST
+// ==========================================
+
+const crow = (c = {}) => {
+
+  const n = ++uid;
+
+  C.insertAdjacentHTML('beforeend', `
+
+    <tr>
+
+      <td></td>
+
+      <td>
+        ${SGD.esc(c.desc || '')}
+      </td>
+
+      <td>
+
+        <div class="res">
+
+          ${['OK', 'NÃO OK', 'N/A'].map(o => `
+
+            <label>
+
+              <input
+                type="radio"
+                name="c${n}"
+                value="${o}"
+                ${(c.res || 'OK') === o ? 'checked' : ''}
+              >
+
+              ${o}
+
+            </label>
+
+          `).join('')}
+
+        </div>
+
+      </td>
+
+      <td>
+
+        <button
+          type="button"
+          class="btn-icon"
+          data-del
+          aria-label="Remover item"
+        >
+          ${del}
+        </button>
+
+      </td>
+
+    </tr>
+
+  `);
+
+  renum(C);
+
+};
+
+
+// ==========================================
+// REMOVER LINHAS
+// ==========================================
+
+f.addEventListener('click', e => {
+
+  const b = e.target.closest('[data-del]');
+
+  if (!b) return;
+
+  const tb = b.closest('tbody');
+
+  if (tb.rows.length <= 1) {
+
+    return SGD.toast('Mantenha ao menos uma linha.');
+
+  }
+
+  b.closest('tr').remove();
+
+  renum(tb);
+
+});
+
+
+// ==========================================
+// ADICIONAR MEDIDAS
+// ==========================================
+
+$('#addM').onclick = () => {
+
+  mrow();
+
+};
+
+
+// ==========================================
+// ADICIONAR CHECKLIST
+// ==========================================
+
+$('#addC').onclick = () => {
+
+  const t = (prompt('Descrição do item') || '').trim();
+
+  if (t) crow({ desc: t });
+
+};
+
+
+// ==========================================
+// IMPORTAR DESENHO TÉCNICO
+// ==========================================
+
+$('#file').onchange = e => {
+
+  const x = e.target.files[0];
+
+  if (!x) return;
+
+  const url = URL.createObjectURL(x);
+
+  if (x.type.startsWith('image/')) {
+
+    $('#prev').innerHTML = `
+      <img
+        alt="Desenho técnico"
+        src="${url}"
+      >
+    `;
+
+  } else {
+
+    $('#prev').textContent = x.name;
+
+  }
+
+};
+
+
+// ==========================================
+// COLETAR DADOS DO FORMULÁRIO
+// ==========================================
+
+const dados = () => ({
+
+  ...SGD.simple(f),
+
+  medidas: [...M.rows].map(r => {
+
+    const medida = Object.fromEntries(
+
+      K.map((k, i) => [
+
+        k,
+
+        r.cells[i + 1].querySelector('input, select').value
+
+      ])
+
+    );
+
+
+    const resultado = r.querySelector('.resultado-medida');
+
+
+    medida.res = resultado.classList.contains('aprovado')
+      ? 'a'
+      : resultado.classList.contains('reprovado')
+        ? 'r'
+        : '';
+
+
+    return medida;
+
+  }),
+
+
+  checklist: [...C.rows].map(r => ({
+
+    desc: r.cells[1].textContent.trim(),
+
+    res: (r.querySelector('input:checked') || {}).value || ''
+
+  }))
+
+});
+
+
+// ==========================================
+// SALVAR / CONCLUIR LAUDO
+// ==========================================
+
+function gravar(status) {
+
+  const req = status === 'pendente'
+    ? [...f.querySelectorAll('[required]')]
+    : [$('#cod')];
+
+  let ok = true;
+
+
+  req.forEach(i => {
+
+    const b = !i.value.trim();
+
+    i.classList.toggle('bad', b);
+
+    if (b) ok = false;
+
+  });
+
+
+  if (!ok) {
+
+    return SGD.toast('Preencha os campos obrigatórios.');
+
+  }
+
+
+  // Atualiza todas as linhas antes de salvar.
+
+  [...M.rows].forEach(atualizarLinha);
+
+
+  try {
+
+    Laudos.salvar({
+
+      id: atual && atual.id,
+
+      tipo: T,
+
+      status,
+
+      dados: dados()
+
+    });
+
+
+    SGD.toast(
+
+      status === 'pendente'
+        ? 'Laudo enviado para aprovação do gerente'
+        : 'Laudo salvo'
+
+    );
+
+
+    setTimeout(() => {
+
+      location.href = 'preventiva.html';
+
+    }, 900);
+
+
+  } catch (err) {
+
+    SGD.toast(err.message, 4500);
+
+  }
+
+}
+
+
+// ==========================================
+// BOTÕES DO FORMULÁRIO
+// ==========================================
+
+f.onsubmit = e => {
+
+  e.preventDefault();
+
+  gravar('andamento');
+
+};
+
+
+$('#concluir').onclick = () => {
+
+  gravar('pendente');
+
+};
+
+
+// ==========================================
+// CARREGAR LAUDO EXISTENTE
+// ==========================================
+
+const id = params.get('id');
+
+
+if (id) {
+
+  atual = Laudos.obter(id);
+
+  if (!atual || atual.tipo !== T) {
+
+    location.replace('preventiva.html');
+
+  }
+
+}
+
+
+if (atual) {
+
+  const d = atual.dados;
+
+  SGD.fill(f, d);
+
+
+  // Recupera as medidas e recalcula seus resultados.
+
+  (d.medidas || []).forEach(m => {
+
+    mrow(m);
+
+  });
+
+
+  // Recupera o checklist.
+
+  (d.checklist || []).forEach(c => {
+
+    crow(c);
+
+  });
+
+
+  if (!Laudos.editavel(atual)) {
+
+    SGD.bloquear(f, Laudos.msgLeitura(atual));
+
+  }
+
+  else if (atual.status === 'reprovado') {
+
+    SGD.aviso(f, Laudos.msgReprovado(atual));
+
+  }
+
+}
+
+
+// ==========================================
+// NOVO LAUDO
+// ==========================================
+
+else {
+
+  // Cria quatro linhas iniciais.
+
+  for (let i = 0; i < 4; i++) {
+
+    mrow();
+
+  }
+
+
+  // Checklist padrão.
+
+  [
+
+    'Conferir esquadro de todos os conjuntos',
+
+    'Aperto de todos os parafusos',
+
+    'Lubrificação de todos os componentes',
+
+    'Presença de solda em toda a solda (se aplicável)'
+
+  ].forEach(desc => {
+
+    crow({ desc });
+
+  });
+
+
+  // Código recebido pela URL.
+
+  if (params.get('cod')) {
+
+    $('#cod').value = params.get('cod');
+
+  }
+
+
+  // Verifica limite de laudos.
+
+  if (Laudos.vagas(T) <= 0) {
+
+    SGD.bloquear(f, Laudos.msgLimite(T));
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
