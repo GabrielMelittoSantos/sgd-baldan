@@ -5,8 +5,23 @@
 .approval-count { color: var(--muted); }
 .filters { display: flex; gap: var(--gap-sm); flex-wrap: wrap; align-items: center; }
 .filters select { width: auto; min-width: 200px; }
+.custo { width: 110px; min-height: 34px; padding: .35rem .5rem; }
+.moeda { color: var(--muted); font-size: .8rem; margin-right: .3rem; }
 .dmp-link { color: var(--blue-link); text-decoration: underline; text-underline-offset: 3px; }
 .empty { text-align: center; color: var(--muted); padding: 2rem 1rem; }
+
+/* Tipos de dispositivo */
+.tipos { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1rem; }
+.tipo-item { display: inline-flex; align-items: center; gap: .35rem; }
+.tipo-form { display: flex; flex-wrap: wrap; align-items: end; gap: var(--gap-sm); }
+.tipo-form .f:first-child { flex: 1; min-width: 220px; }
+.tipo-form input[type="color"] { width: 64px; padding: .2rem; cursor: pointer; }
 dialog { margin: auto; background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.4rem; width: min(480px, 92vw); }
 dialog::backdrop { background: rgba(0,0,0,.6); }
 dialog form { display: grid; gap: var(--gap-sm); }
+
+/* Aprovação de novos usuários */
+#usuariosCard { margin-top: 1.25rem; }
+#usuariosCard .perfil-autorizado { min-width: 190px; max-width: 240px; }
+#usuariosCard td .btn { display: inline-flex; height: 34px; padding: 0 .7rem; margin: .15rem; font-size: .75rem; letter-spacing: .02em; text-transform: none; }
+#usuariosCard td .btn:not(.pri) { background: transparent; border: 1px solid var(--line); color: var(--text); box-shadow: none; }

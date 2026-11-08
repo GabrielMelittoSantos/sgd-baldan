@@ -25,26 +25,20 @@
             <p class="sub">Lista completa de dispositivos cadastrados no sistema.</p>
           </div><span class="sp"></span>
           <label class="search"><span data-ic="search"></span><input id="q"
-              placeholder="Buscar por código, nome, produto ou responsável…" aria-label="Buscar"></label>
+              placeholder="Buscar por dispositivo, produto, responsável, tipo, laudos, atualização ou status…" aria-label="Buscar"></label>
+          <select id="fTipo" aria-label="Filtrar por tipo"></select>
+          <select id="fStatus" aria-label="Filtrar por status">
+            <option value="">Todos os status</option>
+            <option value="andamento">Em andamento</option>
+            <option value="pendente">Aguardando aprovação</option>
+            <option value="reprovado">Refazer laudo</option>
+            <option value="aprovado">Aprovado</option>
+            <option value="sem">Sem laudo</option>
+          </select>
         </div>
         <section class="stats">
           <div class="stat"><span data-ic="file"></span>
-            <div><small>Total de dispositivos</small><b id="tot">48</b></div>
-          </div>
-          <div class="stat">
-            <div><small class="c-montagem">Montagem</small><b>12</b><small>25%</small></div>
-          </div>
-          <div class="stat">
-            <div><small class="c-usinagem">Usinagem</small><b>10</b><small>21%</small></div>
-          </div>
-          <div class="stat">
-            <div><small class="c-solda">Solda</small><b>8</b><small>17%</small></div>
-          </div>
-          <div class="stat">
-            <div><small class="c-furadeira">Furadeira</small><b>6</b><small>12%</small></div>
-          </div>
-          <div class="stat">
-            <div><small>Outros</small><b>12</b><small>25%</small></div>
+            <div><small>Total de dispositivos</small><b id="tot">0</b></div>
           </div>
         </section>
         <div class="tw">
@@ -69,6 +63,7 @@
   </div>
   <script src="../services/auth.js"></script>
   <script src="../services/laudos.js"></script>
+  <script src="../services/tipos.js"></script>
   <script src="../js/layout.js"></script>
   <script src="../services/dispositivos.js"></script>
   <script>
@@ -77,28 +72,91 @@
       andamento: 'Em andamento',
       pendente: 'Aguardando aprovação',
       reprovado: 'Refazer laudo',
-      aprovado: 'Aprovado'
+      aprovado: 'Aprovado',
+      sem: 'Sem laudo'
     }, esc = SGD.esc;
+    // Laudos: sigla, nome, tipo interno e rótulo usado na busca
+    const LAUDOS = [
+      { k: 'lib', t: 'liberacao', nome: 'liberação' },
+      { k: 'cor', t: 'corretiva', nome: 'corretiva' },
+      { k: 'pre', t: 'preventiva', nome: 'preventiva' }
+    ];
     const q = document.getElementById('q'), tb = document.getElementById('rows'), cnt = document.getElementById('cnt');
+    const fTipo = document.getElementById('fTipo'), fStatus = document.getElementById('fStatus');
     q.value = new URLSearchParams(location.search).get('q') || '';
-    const lb = (k, t, n) => `<span class="lb lb--${k}${n ? '' : ' lb--off'}" title="${n} laudo(s) de ${t} aprovado(s)">${k.toUpperCase()} ${n}</span>`;
-    function draw() {
-      const t = q.value.toLowerCase(), todos = Dispositivos.listar();
-      const l = todos.filter(d => [d.cod, d.desc, d.produto, d.resp, d.tipo].join(' ').toLowerCase().includes(t));
-      const novos = todos.filter(d => d.novo).length; document.getElementById('tot').textContent = 48 + novos;
-      cnt.textContent = `Mostrando ${l.length} de ${48 + novos} dispositivos`;
-      tb.innerHTML = l.map(d => {
-        const sub = d.status === 'lib' && d.lib ? `Liberação aprovada em ${new Date(d.lib.decisao.em).toLocaleDateString('pt-BR')}` : `Próxima preventiva ${esc(d.prox)}`;
-        return `<tr class="row" tabindex="0" data-c="${esc(d.cod)}"><td><div class="dev"><span class="thumb"></span><div><b>${esc(d.cod)}</b></div></div></td><td>${esc(d.produto)}</td><td>${esc(d.resp)}</td><td><span class="pill pill--${esc(d.tipo.toLowerCase())}">${esc(d.tipo)}</span></td><td><div class="lbs">${lb('lib', 'liberação', d.cont.liberacao)}${lb('cor', 'corretiva', d.cont.corretiva)}${lb('pre', 'preventiva', d.cont.preventiva)}</div></td><td>${esc(d.upd)}</td><td>
-  <span class="dot dot--${d.status}"></span>
-  ${ST[d.status]}
-</td></tr>`
-      }).join('') || '<tr><td colspan="7" class="empty">Nenhum dispositivo encontrado. Ajuste a busca.</td></tr>'
+
+    // Filtro de tipo: "Todos os tipos" + tipos cadastrados (principais e extras)
+    fTipo.innerHTML = '<option value="">Todos os tipos</option>' +
+      Tipos.listar().map(t => `<option value="${esc(t.nome)}">${esc(t.nome)}</option>`).join('');
+
+    // Clique na coluna Laudos: 1º clique mostra o status daquele laudo, 2º clique abre o laudo.
+    const sel = {}; // cod -> 'liberacao' | 'corretiva' | 'preventiva'
+
+    // Status exibido: do laudo escolhido na coluna Laudos ou, sem escolha, do laudo mais recente.
+    function statusDe(d) {
+      const t = sel[d.cod];
+      if (!t) return { st: d.status, de: '' };
+      const l = d.ultimoPorTipo[t];
+      return { st: l ? l.status : 'sem', de: 'Laudo de ' + LAUDOS.find(x => x.t === t).nome };
     }
-    q.addEventListener('input', draw); draw();
+
+    const lb = (d, x) => {
+      const n = d.cont[x.t], tem = !!d.ultimoPorTipo[x.t], on = sel[d.cod] === x.t;
+      const dica = on
+        ? (tem ? `Clique novamente para abrir o laudo de ${x.nome}` : `Este dispositivo não tem laudo de ${x.nome}`)
+        : `${n} laudo(s) de ${x.nome} aprovado(s). Clique para ver o status`;
+      return `<button type="button" class="lb lb--${x.k}${tem ? '' : ' lb--off'}${on ? ' lb--on' : ''}" data-l="${x.t}" aria-pressed="${on}" title="${dica}">${x.k.toUpperCase()} ${n}</button>`;
+    };
+
+    function draw() {
+      const t = q.value.trim().toLowerCase(), todos = Dispositivos.listar();
+      const l = todos.filter(d => {
+        const s = statusDe(d);
+        if (fTipo.value && String(d.tipo).toLowerCase() !== fTipo.value.toLowerCase()) return false;
+        if (fStatus.value && s.st !== fStatus.value) return false;
+        // A busca cobre todas as colunas da tabela
+        const laudos = LAUDOS.map(x => `${x.k} ${d.cont[x.t]} ${x.nome} ${d.cont[x.t]} aprovado`).join(' ');
+        return [d.cod, d.desc, d.produto, d.resp, d.tipo, laudos, d.upd, ST[s.st], s.de].join(' ').toLowerCase().includes(t);
+      });
+      document.getElementById('tot').textContent = todos.length;
+      cnt.textContent = `Mostrando ${l.length} de ${todos.length} dispositivos`;
+      tb.innerHTML = l.map(d => {
+        const s = statusDe(d);
+        return `<tr class="row" tabindex="0" data-c="${esc(d.cod)}"><td><div class="dev"><span class="thumb"></span><div><b>${esc(d.cod)}</b></div></div></td><td>${esc(d.produto)}</td><td>${esc(d.resp)}</td><td>${Tipos.pill(d.tipo)}</td><td><div class="lbs">${LAUDOS.map(x => lb(d, x)).join('')}</div></td><td>${esc(d.upd)}</td><td><span class="dot dot--${s.st}"></span>${ST[s.st]}${s.de ? `<small>${s.de}</small>` : ''}</td></tr>`
+      }).join('') || '<tr><td colspan="7" class="empty">Nenhum dispositivo encontrado. Ajuste a busca ou os filtros.</td></tr>';
+      renderStats(todos);
+    }
+
+    // Cartões por tipo: só os tipos que têm dispositivos, do mais para o menos usado
+    function renderStats(todos) {
+      const por = {};
+      todos.forEach(d => { const k = String(d.tipo).toLowerCase(); por[k] = (por[k] || 0) + 1; });
+      const tipos = Object.keys(por).map(k => ({ nome: (Tipos.obter(k) || {}).nome || k, n: por[k] }))
+        .sort((a, b) => b.n - a.n);
+      document.querySelectorAll('.stat--tipo').forEach(e => e.remove());
+      document.querySelector('.stats').insertAdjacentHTML('beforeend', tipos.map(t =>
+        `<div class="stat stat--tipo"><div><small style="color:${Tipos.cor(t.nome)}">${esc(t.nome)}</small><b>${t.n}</b><small>${Math.round(t.n / todos.length * 100)}%</small></div></div>`).join(''));
+    }
+
+    q.addEventListener('input', draw); fTipo.addEventListener('change', draw); fStatus.addEventListener('change', draw);
+    draw();
+
     const abrir = r => { if (r) location.href = 'dispositivo.html?cod=' + encodeURIComponent(r.dataset.c) };
-    tb.addEventListener('click', e => abrir(e.target.closest('tr[data-c]')));
-    tb.addEventListener('keydown', e => { if (e.key === 'Enter') abrir(e.target.closest('tr[data-c]')) });
+    tb.addEventListener('click', e => {
+      const b = e.target.closest('.lb'), tr = e.target.closest('tr[data-c]');
+      if (!tr) return;
+      if (!b) return abrir(tr);
+      const d = Dispositivos.obter(tr.dataset.c), t = b.dataset.l, nome = LAUDOS.find(x => x.t === t).nome;
+      if (sel[d.cod] === t) {                     // 2º clique: abre o laudo direto
+        const l = d.ultimoPorTipo[t];
+        if (l) location.href = t + '-novo.html?id=' + encodeURIComponent(l.id);
+        else SGD.toast('Este dispositivo ainda não tem laudo de ' + nome + '.');
+        return;
+      }
+      sel[d.cod] = t; draw();                     // 1º clique: mostra o status desse laudo
+      const nb = tb.querySelector(`tr[data-c="${CSS.escape(d.cod)}"] .lb[data-l="${t}"]`); if (nb) nb.focus();
+    });
+    tb.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.target.closest('.lb')) abrir(e.target.closest('tr[data-c]')) });
   </script>
 </body>
 

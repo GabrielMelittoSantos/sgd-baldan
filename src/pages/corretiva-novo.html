@@ -11,7 +11,7 @@
     <label for="rm">Responsável pela manutenção <i>*</i></label>
     <input type="text" id="rm" name="resp_manut" placeholder=" Nome do Responsável" disabled>
 </div>
- <div class="f"><label for="tipo">Tipo <i>*</i></label><select id="tipo" name="tipo" required><option value="">Selecione o tipo</option><option>Montagem</option><option>Solda</option><option>Usinagem</option><option>Furadeira</option></select></div>
+ <div class="f"><label for="tipo">Tipo <i>*</i></label><select id="tipo" name="tipo" required data-tipos><option value="">Selecione o tipo</option></select></div>
   </div></section>
   
   
@@ -255,7 +255,7 @@
 
  <section class="card"><div class="f"><label for="obs">Outras informações</label><textarea id="obs" name="obs" placeholder="Observações, anexos ou registros adicionais"></textarea></div></section>
  <div class="actions"><a class="btn" href="corretiva.html"><span data-ic="x"></span>Cancelar</a><button class="btn" type="submit"><span data-ic="save"></span>Salvar laudo</button><button class="btn pri" type="button" id="concluir"><span data-ic="file"></span>Concluir e enviar</button></div>
-</form></main></div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../js/layout.js"></script><script>
+</form></main></div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../services/tipos.js"></script><script src="../js/layout.js"></script><script>
 SGD.shell('dispositivos');
 const T='corretiva',$=s=>document.querySelector(s),f=$('#f'),A=$('#acts'),fish=$('#fish'),esc=SGD.esc;
 const CATS=['Método','Máquina','Material','Mão de obra','Medição','Meio ambiente'],X=SGD.ic('x');

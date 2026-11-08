@@ -21,7 +21,15 @@
       aprovados.filter(l => l.tipo === tipo).length;
   
     // Status do dispositivo acompanha o laudo mais recente
-    const status = ultimo ? ultimo.status : 'andamento';
+    // (sem nenhum laudo = 'sem', nada está sendo preenchido)
+    const status = ultimo ? ultimo.status : 'sem';
+
+    // Laudo mais recente de cada tipo (ls já vem do mais novo ao mais antigo)
+    const ultimoPorTipo = {
+      liberacao: ls.find(l => l.tipo === 'liberacao') || null,
+      corretiva: ls.find(l => l.tipo === 'corretiva') || null,
+      preventiva: ls.find(l => l.tipo === 'preventiva') || null
+    };
   
     return {
       ...d,
@@ -34,6 +42,7 @@
           )[0].decisao.em)
         : d.upd,
       status,
+      ultimoPorTipo,
       cont: {
         liberacao: cont('liberacao'),
         corretiva: cont('corretiva'),

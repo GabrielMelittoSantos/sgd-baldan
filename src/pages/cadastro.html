@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SGD • Solicitar acesso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800&family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/global.css">
+  <link rel="stylesheet" href="../styles/login.css">
+  <style>
+    .signup-card { max-width: 560px; }
+    .signup-card .subtitle { margin-bottom: 1.3rem; }
+    .signup-card .field { margin-bottom: 1rem; }
+    .signup-card select { flex: 1; min-width: 0; padding: 0 1rem; color: var(--text); background: var(--field); border: 0; outline: 0; font: 400 1rem var(--font-body); }
+    .signup-help { color: var(--muted); font-size: .88rem; margin: -.2rem 0 1rem; }
+    .signup-actions { display:flex; justify-content:space-between; align-items:center; margin-top:1.2rem; gap:1rem; }
+    .signup-actions .btn { flex:1; }
+    .signup-message { margin:.5rem 0 1rem; color:#ff6b75; }
+    .signup-message.success { color:#74d69a; }
+    @media(max-width:480px){.signup-actions{flex-direction:column-reverse;align-items:stretch}}
+  </style>
+</head>
+<body>
+<main class="login">
+  <section class="hero" aria-hidden="true">
+    <div class="hero__machine"><img src="../assests/image/LogoSite.png" alt=""></div>
+    <span class="hero__shape hero__shape--solid"></span>
+    <div class="hero__text"><p class="hero__slogan">Mais controle.<br>Menos paradas.</p><span>V 0.1</span><span class="hero__bar"></span></div>
+  </section>
+  <section class="access">
+    <div class="card signup-card">
+      <header class="brand">
+        <img src="../assests/image/LogoBaldan.png" alt="" class="brand__icon">
+        <span class="brand__name">SGD</span><span class="brand__divider"></span>
+        <span class="brand__desc">Sistema de Gestão<br>de Dispositivos</span>
+      </header>
+      <h1 class="title">Solicitar <span>acesso</span></h1>
+      <p class="subtitle">Preencha seus dados. A Gestão avaliará sua solicitação.</p>
+      <form id="cadastroForm" class="form" novalidate>
+        <div class="field"><label class="field__icon" for="nome"><span class="sr-only">Nome</span> N</label><input id="nome" name="nome" type="text" maxlength="100" placeholder="Nome completo" autocomplete="name" required></div>
+        <div class="field"><label class="field__icon" for="re"><span class="sr-only">RE</span> RE</label><input id="re" name="re" type="text" maxlength="30" placeholder="Registro (RE)" autocomplete="username" required></div>
+        <div class="field"><label class="field__icon" for="senha"><span class="sr-only">Senha</span> <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></label><input id="senha" name="senha" type="password" minlength="8" placeholder="Senha (mínimo 8 caracteres)" autocomplete="new-password" required></div>
+        <div class="field"><label class="field__icon" for="perfil"><span class="sr-only">Perfil solicitado</span> P</label>
+          <select id="perfil" name="perfil" required>
+            <option value="">Selecione o perfil de acesso</option>
+            <option value="Programador">Programador</option>
+            <option value="Gerente (somente consulta)">Gerente (somente consulta)</option>
+            <option value="Projetista/Operacional">Projetista/Operacional</option>
+          </select>
+        </div>
+        <p class="signup-help">O acesso só será liberado após aprovação da Gestão.</p>
+        <p id="cadastroMsg" class="signup-message" role="alert" hidden></p>
+        <div class="signup-actions"><a class="link" href="../../index.html">Voltar ao login</a><button class="btn" type="submit">Enviar solicitação</button></div>
+      </form>
+    </div>
+  </section>
+</main>
+<script src="../services/auth.js"></script>
+<script>
+document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.currentTarget, msg = document.getElementById('cadastroMsg');
+  msg.hidden = true; msg.classList.remove('success');
+  try {
+    await Auth.cadastrar({
+      nome: form.nome.value,
+      re: form.re.value,
+      senha: form.senha.value,
+      perfil: form.perfil.value
+    });
+    msg.textContent = 'Solicitação enviada! Aguarde a aprovação da Gestão para acessar o sistema.';
+    msg.classList.add('success'); msg.hidden = false;
+    form.reset();
+  } catch (err) {
+    msg.textContent = err.message || 'Não foi possível enviar a solicitação.';
+    msg.hidden = false;
+  }
+});
+</script>
+</body>
+</html>

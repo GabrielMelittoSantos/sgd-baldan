@@ -83,6 +83,21 @@
     });
     gravar(lista); return n;
   }
+  /* Custos (preenchidos pela gestão). Ficam em l.custos, fora de "dados", para não serem
+     apagados quando o usuário refaz o laudo, e não alteram "Última atualização". */
+  function definirCustos(id, material, maoObra) {
+    exigeAdmin();
+    const num = (v) => {
+      if (v === '' || v == null) return null;
+      const n = Number(v);
+      if (!isFinite(n) || n < 0) throw new Error('Informe um valor válido (zero ou maior).');
+      return Math.round(n * 100) / 100;
+    };
+    const lista = todos(), i = lista.findIndex((l) => l.id === id);
+    if (i < 0) throw new Error('Laudo não encontrado.');
+    lista[i] = { ...lista[i], custos: { material: num(material), mao_obra: num(maoObra) } };
+    gravar(lista); return lista[i].custos;
+  }
   // Retorna todos os laudos de um dispositivo,
   // independentemente do usuário ou do status.
   const porCodigo = (cod) => todos()
@@ -90,5 +105,5 @@
     .sort((a, b) => b.atualizado.localeCompare(a.atualizado));
   
   window.Laudos = { LIMITE, TIPOS, STATUS, fila, emAndamento: fila, ativos, contar, aprovadosMes, vagas, obter, editavel, salvar, excluir,
-    aprovados, normCod, todosGestao, decidir, msgLimite, msgLeitura, msgReprovado, porCodigo };
+    aprovados, normCod, todosGestao, decidir, definirCustos, msgLimite, msgLeitura, msgReprovado, porCodigo };
 })();

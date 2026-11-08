@@ -23,13 +23,15 @@
           <option value="pendente">Aguardando aprovação</option><option value="reprovado">Reprovados (refazer)</option>
           <option value="aprovado">Aprovados</option><option value="andamento">Em andamento</option><option value="todos">Todos</option>
         </select>
-        <label class="search"><span data-ic="search"></span><input id="busca" type="search" placeholder="Buscar O.S., DMP, responsável ou produto…" aria-label="Buscar laudos"></label>
+        <select id="fTipo" aria-label="Filtrar por tipo de dispositivo"></select>
+        <select id="fLaudo" aria-label="Filtrar por tipo de laudo"></select>
+        <label class="search"><span data-ic="search"></span><input id="busca" type="search" placeholder="Buscar O.S., DMP, responsável, tipo, produto, datas, status ou custos…" aria-label="Buscar laudos"></label>
       </div>
     </div>
 
     <div class="tw mt"><table>
       <thead><tr>
-        <th>O.S.</th><th>DMP</th><th>Responsável</th><th>Tipo de laudo</th><th>Data inicial</th><th>Data final</th><th>Produto</th><th>Status</th><th>Custo material</th><th>Custo mão de obra</th><th>Selecionar</th>
+        <th>O.S.</th><th>DMP</th><th>Responsável</th><th>Tipo de dispositivo</th><th>Tipo de laudo</th><th>Data inicial</th><th>Data final</th><th>Produto</th><th>Última atualização</th><th>Status</th><th>Custo material</th><th>Custo mão de obra</th><th>Selecionar</th>
       </tr></thead>
       <tbody id="laudos"></tbody>
     </table></div>
@@ -39,6 +41,28 @@
       <button class="btn" id="reprovar" type="button">Reprovar selecionados</button>
       <button class="btn pri" id="aprovar" type="button">Aprovar selecionados</button>
     </div>
+  </section>
+
+  <section class="card" id="usuariosCard">
+    <div class="head head--flush">
+      <div><h2>Solicitações de acesso <span class="pill pill--count" id="usuariosPendentes">0</span></h2>
+      <p class="sub card__lead">Confira os dados e defina o perfil que será concedido antes de liberar o usuário.</p></div>
+    </div>
+    <div class="tw mt"><table>
+      <thead><tr><th>Nome</th><th>RE</th><th>Perfil solicitado</th><th>Data</th><th>Perfil autorizado</th><th>Ação</th></tr></thead>
+      <tbody id="solicitacoesUsuarios"></tbody>
+    </table></div>
+  </section>
+
+  <section class="card" id="tiposCard">
+    <h2><span data-ic="grid"></span>Tipos de dispositivo</h2>
+    <p class="sub card__lead">Cada tipo tem uma cor própria, usada em todas as telas. Só a gestão cria novos tipos.</p>
+    <div class="tipos" id="tiposLista"></div>
+    <form class="tipo-form" id="tipoForm" autocomplete="off">
+      <div class="f"><label for="tipoNome">Novo tipo</label><input id="tipoNome" maxlength="30" placeholder="Ex.: Gabarito de controle"></div>
+      <div class="f"><label for="tipoCor">Cor</label><input id="tipoCor" type="color" aria-label="Cor do tipo"></div>
+      <button class="btn pri" type="submit">Adicionar tipo</button>
+    </form>
   </section>
 </main>
 </div></div>
@@ -54,15 +78,55 @@
 
 <script src="../services/auth.js"></script>
 <script src="../services/laudos.js"></script>
+<script src="../services/tipos.js"></script>
 <script src="../js/layout.js"></script>
 <script>
 SGD.shell('gestao-adm');
 if (!Auth.sessao().admin) location.replace('inicio.html'); // só a gestão acessa esta tela
 
 const $ = (s) => document.querySelector(s), tb = $('#laudos'), esc = SGD.esc;
+
+// Solicitações de novos usuários: a aprovação pode conceder perfil diferente do solicitado.
+const perfis = Auth.PERFIS;
+function desenharSolicitacoes() {
+  const lista = Auth.listarSolicitacoes();
+  const pendentes = lista.filter((s) => s.status === 'pendente');
+  $('#usuariosPendentes').textContent = pendentes.length;
+  $('#solicitacoesUsuarios').innerHTML = pendentes.length ? pendentes.map((s) => `
+    <tr>
+      <td>${esc(s.nome)}</td><td>${esc(s.re)}</td>
+      <td>${esc(s.perfilSolicitado)}</td>
+      <td>${new Date(s.solicitadoEm).toLocaleDateString('pt-BR')}</td>
+      <td><select class="perfil-autorizado" data-id="${esc(s.id)}" aria-label="Perfil autorizado para ${esc(s.nome)}">
+        ${perfis.map((p) => `<option value="${esc(p)}" ${p === s.perfilSolicitado ? 'selected' : ''}>${esc(p)}</option>`).join('')}
+      </select></td>
+      <td><button type="button" class="btn pri usuario-aprovar" data-id="${esc(s.id)}">Aprovar</button>
+      <button type="button" class="btn usuario-recusar" data-id="${esc(s.id)}">Recusar</button></td>
+    </tr>`).join('') : '<tr><td colspan="6" class="empty">Nenhuma solicitação pendente.</td></tr>';
+}
+$('#solicitacoesUsuarios').addEventListener('click', (e) => {
+  const aprovar = e.target.closest('.usuario-aprovar');
+  const recusar = e.target.closest('.usuario-recusar');
+  if (!aprovar && !recusar) return;
+  const id = (aprovar || recusar).dataset.id;
+  try {
+    if (aprovar) {
+      const seletor = document.querySelector(`.perfil-autorizado[data-id="${CSS.escape(id)}"]`);
+      Auth.decidirSolicitacao(id, true, seletor.value);
+      SGD.toast('Usuário aprovado e acesso liberado.');
+    } else {
+      if (!confirm('Deseja realmente recusar esta solicitação?')) return;
+      Auth.decidirSolicitacao(id, false);
+      SGD.toast('Solicitação recusada.');
+    }
+    desenharSolicitacoes();
+  } catch (err) { SGD.toast(err.message || 'Não foi possível concluir a ação.', 4500); }
+});
+desenharSolicitacoes();
 const PILL = { andamento: 'info', pendente: 'pend', reprovado: 'redo', aprovado: 'ok' };
 const dia = (iso) => (iso ? new Date(iso).toLocaleDateString('pt-BR') : '—');
-const reais = (v) => (v && !isNaN(v) ? 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : 'R$ —');
+const dh = (iso) => (iso ? new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).replace(',', '') : '—');
+const moeda = (v) => (v == null ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 }));
 const marcados = () => [...tb.querySelectorAll('.sel:checked')].map((i) => i.value);
 
 function contar() {
@@ -70,27 +134,53 @@ function contar() {
   $('#contador').textContent = n + (n === 1 ? ' laudo selecionado' : ' laudos selecionados');
 }
 
-function draw() {
-  const st = $('#filtro').value, t = $('#busca').value.trim().toLowerCase();
-  const todos = Laudos.todosGestao();
-  $('#nPend').textContent = todos.filter((x) => x.status === 'pendente').length;
-  const l = todos.filter((x) => (st === 'todos' || x.status === st) &&
-    JSON.stringify([x.dados.os, x.dados.codigo, x.autorNome, x.dados.produto, Laudos.TIPOS[x.tipo]]).toLowerCase().includes(t))
-    .sort((a, b) => b.atualizado.localeCompare(a.atualizado));
-  tb.innerHTML = l.map((x) => `<tr>
+// Filtros de tipo de dispositivo e de tipo de laudo
+$('#fTipo').innerHTML = '<option value="">Todos os tipos de dispositivo</option>' +
+  Tipos.listar().map((t) => `<option value="${esc(t.nome)}">${esc(t.nome)}</option>`).join('');
+$('#fLaudo').innerHTML = '<option value="">Todos os tipos de laudo</option>' +
+  Object.entries(Laudos.TIPOS).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('');
+
+const campoCusto = (x, k, rotulo) => {
+  const v = (x.custos || {})[k];
+  return `<input class="custo" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00" data-id="${x.id}" data-k="${k}" value="${v == null ? '' : v}" aria-label="${rotulo} do laudo ${esc(x.dados.codigo)}">`;
+};
+
+function linha(x) {
+  return `<tr>
     <td>${esc(x.dados.os || '—')}</td>
     <td><a class="dmp-link" href="${x.tipo}-novo.html?id=${x.id}" title="Abrir laudo (somente leitura)">${esc(x.dados.codigo || '—')}</a></td>
-    <td>${esc(x.autorNome)}</td><td style="text-transform:capitalize">${esc(Laudos.TIPOS[x.tipo])}</td>
-    <td>${dia(x.criado)}</td><td>${dia(x.enviado)}</td><td>${esc(x.dados.produto || '—')}</td>
+    <td>${esc(x.autorNome)}</td><td>${Tipos.pill(x.dados.tipo)}</td><td style="text-transform:capitalize">${esc(Laudos.TIPOS[x.tipo])}</td>
+    <td>${dia(x.criado)}</td><td>${dia(x.enviado)}</td><td>${esc(x.dados.produto || '—')}</td><td>${dh(x.atualizado)}</td>
     <td><span class="pill pill--${PILL[x.status]}">${Laudos.STATUS[x.status]}</span>${x.status === 'reprovado' ? `<small title="${esc((x.decisao || {}).motivo)}">${esc((x.decisao || {}).motivo)}</small>` : ''}</td>
-    <td>${reais(x.dados.custo_material)}</td><td>${reais(x.dados.custo_mao_obra)}</td>
-    <td><input class="sel" type="checkbox" value="${x.id}" aria-label="Selecionar laudo ${esc(x.dados.codigo)}" ${x.status === 'pendente' ? '' : 'disabled title="Disponível apenas para laudos aguardando aprovação"'}></td></tr>`).join('')
-    || '<tr><td colspan="11" class="empty">Nenhum laudo neste filtro.</td></tr>';
+    <td><span class="moeda">R$</span>${campoCusto(x, 'material', 'Custo material')}</td><td><span class="moeda">R$</span>${campoCusto(x, 'mao_obra', 'Custo de mão de obra')}</td>
+    <td><input class="sel" type="checkbox" value="${x.id}" aria-label="Selecionar laudo ${esc(x.dados.codigo)}" ${x.status === 'pendente' ? '' : 'disabled title="Disponível apenas para laudos aguardando aprovação"'}></td></tr>`;
+}
+
+// A busca cobre todas as colunas da tabela
+const textoBusca = (x) => [x.dados.os, x.dados.codigo, x.autorNome, x.dados.tipo, Laudos.TIPOS[x.tipo], dia(x.criado), dia(x.enviado),
+  x.dados.produto, dh(x.atualizado), Laudos.STATUS[x.status], (x.decisao || {}).motivo,
+  (x.custos || {}).material, moeda((x.custos || {}).material), (x.custos || {}).mao_obra, moeda((x.custos || {}).mao_obra)].join(' ').toLowerCase();
+
+function draw() {
+  const st = $('#filtro').value, t = $('#busca').value.trim().toLowerCase(), ft = $('#fTipo').value.toLowerCase(), fl = $('#fLaudo').value;
+  const todos = Laudos.todosGestao();
+  $('#nPend').textContent = todos.filter((x) => x.status === 'pendente').length;
+  const l = todos.filter((x) => (st === 'todos' || x.status === st) && (!fl || x.tipo === fl) &&
+    (!ft || String(x.dados.tipo || '').toLowerCase() === ft) && textoBusca(x).includes(t))
+    .sort((a, b) => b.atualizado.localeCompare(a.atualizado));
+  tb.innerHTML = l.map(linha).join('') || '<tr><td colspan="13" class="empty">Nenhum laudo neste filtro.</td></tr>';
   contar();
 }
 
-tb.addEventListener('change', contar);
-$('#filtro').addEventListener('change', draw);
+// Custos: salva ao sair do campo (sem redesenhar a tabela, para não perder o foco)
+tb.addEventListener('change', (e) => {
+  const i = e.target.closest('.custo');
+  if (!i) return contar();
+  const tr = i.closest('tr'), v = (k) => tr.querySelector(`.custo[data-k="${k}"]`).value;
+  try { Laudos.definirCustos(i.dataset.id, v('material'), v('mao_obra')); i.classList.remove('bad'); SGD.toast('Custo salvo'); }
+  catch (err) { i.classList.add('bad'); SGD.toast(err.message, 4500); }
+});
+$('#filtro').addEventListener('change', draw); $('#fTipo').addEventListener('change', draw); $('#fLaudo').addEventListener('change', draw);
 $('#busca').addEventListener('input', draw);
 
 $('#aprovar').onclick = () => {
@@ -107,6 +197,24 @@ $('#okRep').onclick = () => {
   catch (e) { m.classList.add('bad'); SGD.toast(e.message, 4500); }
 };
 draw();
+
+/* ---- Tipos de dispositivo (somente gestão) ---- */
+function drawTipos() {
+  $('#tiposLista').innerHTML = Tipos.listar().map((t) =>
+    `<span class="tipo-item">${Tipos.pill(t.nome)}${t.padrao ? '' : `<button type="button" class="btn-icon" data-rm="${esc(t.nome)}" aria-label="Remover tipo ${esc(t.nome)}" title="Remover tipo">${SGD.ic('trash')}</button>`}</span>`).join('');
+  $('#tipoCor').value = Tipos.sugerirCor();
+}
+$('#tipoForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  try { const t = Tipos.adicionar($('#tipoNome').value, $('#tipoCor').value); $('#tipoNome').value = ''; drawTipos(); SGD.toast('Tipo “' + t.nome + '” adicionado'); }
+  catch (err) { SGD.toast(err.message, 4500); }
+});
+$('#tiposLista').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-rm]'); if (!b) return;
+  if (!confirm('Remover o tipo “' + b.dataset.rm + '”? Dispositivos e laudos que já usam esse tipo continuam com o nome, mas ficam com a cor neutra.')) return;
+  try { Tipos.remover(b.dataset.rm); drawTipos(); SGD.toast('Tipo removido'); } catch (err) { SGD.toast(err.message, 4500); }
+});
+drawTipos();
 </script>
 </body>
 </html>

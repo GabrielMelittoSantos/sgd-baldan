@@ -350,3 +350,7 @@ body { background: var(--bg); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* Solicitação de acesso */
+.signup-link { margin: 1.2rem 0 0; text-align: center; color: var(--muted); font-size: .92rem; }
+.signup-link .link { margin-left: .25rem; }
