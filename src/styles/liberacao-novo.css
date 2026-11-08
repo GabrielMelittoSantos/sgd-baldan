@@ -1,11 +1,72 @@
 /* SGD • Novo laudo de liberação */
-.split--drawing { grid-template-columns: 1fr 2fr; }
+.split--drawing { display: flex; flex-direction: column; } /* .split--drawing { grid-template-columns: 1fr 2fr; } */
+
+/* Card do desenho técnico */
+.split--drawing > .card:first-child {
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+}
+
+/* Área de importação */
+.split--drawing > .card:first-child .drop {
+    flex: 1;
+    width: 100%;
+    min-height: 220px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+    position: relative;
+}
+
+/* Área de visualização */
+.split--drawing > .card:first-child #prev {
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Imagem importada */
+.split--drawing > .card:first-child #prev img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
 .radio { display: flex; gap: .6rem; align-items: center; padding: .7rem 1rem; border: 1px solid var(--line); border-radius: 10px; margin-bottom: .5rem; cursor: pointer; }
 .radio:has(input:checked) { border-color: var(--acc); background: color-mix(in srgb, var(--acc) 12%, transparent); }
 .radio input, .res input, .tbl input[type=checkbox], .tbl input[type=radio] { width: auto; min-height: 0; accent-color: var(--acc); }
+
+
 .res { display: flex; gap: 1rem; }
 .res label { display: flex; gap: .3rem; align-items: center; }
+
 .tbl { min-width: 900px; }
 .tbl th, .tbl td { padding: .5rem .6rem; }
 .tbl input:not([type=radio]):not([type=checkbox]) { padding: .35rem .5rem; min-height: 32px; min-width: 80px; }
 @media (max-width: 900px) { .split--drawing { grid-template-columns: 1fr; } }
+
+/* Informações gerais ocupando toda a largura */
+.page-form > .split:not(.split--drawing) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+}
+
+.page-form > .split:not(.split--drawing) > .card {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
