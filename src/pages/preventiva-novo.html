@@ -88,82 +88,17 @@
         <!-- INFORMAÇÕES GERAIS -->
         <div class="split">
 
-          <section class="card">
-
-            <h2>
-              <span data-ic="file"></span>
-              Informações gerais
-            </h2>
-
-            <div class="fg">
-
-              <div class="f">
-                <label for="cod">Código do dispositivo <i>*</i></label>
-                <input id="cod" name="codigo" placeholder="Ex.: DMP010100" required>
-              </div>
-
-              <div class="f">
-                <label for="prod">Produto <i>*</i></label>
-
-                <select id="prod" name="produto" required>
-                  <option value="">Selecione o produto</option>
-                  <option>Plataforma Dianteira</option>
-                  <option>Base de Corte</option>
-                  <option>Suporte Lateral</option>
-                </select>
-              </div>
-
-              <div class="f">
-                <label for="dt">Data da validação <i>*</i></label>
-                <input id="dt" name="data" type="date" required>
-              </div>
-
-              <div class="f">
-                <label for="os">Ordem de serviço <i>*</i></label>
-                <input id="os" name="os" placeholder="Ex.: OS-000123" required>
-              </div>
-
-              <div class="f">
-                <label for="conf">Conferente <i>*</i></label>
-
-                <select id="conf" name="conferente" required>
-                  <option value="">Selecione o conferente</option>
-                  <option>Carlos Silva</option>
-                  <option>Rafael Costa</option>
-                </select>
-              </div>
-
-              <div class="f">
-                <label for="rp">Responsável projeto <i>*</i></label>
-
-                <select id="rp" name="resp_projeto" required>
-                  <option value="">Selecione o responsável</option>
-                  <option>Juliano Pereira</option>
-                  <option>Thiago Martins</option>
-                </select>
-              </div>
-
-              <div class="f">
-                <label for="rf">Responsável fabricação <i>*</i></label>
-
-                <select id="rf" name="resp_fab" required>
-                  <option value="">Selecione o responsável</option>
-                  <option>Lucas Fernandes</option>
-                  <option>André Oliveira</option>
-                </select>
-              </div>
-
-              <div class="f">
-                <label for="tipo">Tipo <i>*</i></label>
-
-                <select id="tipo" name="tipo" required data-tipos>
-                  <option value="">Selecione o tipo</option>
-                </select>
-              </div>
-
-            </div>
-
-          </section>
+       <section class="card"><h2><span data-ic="file"></span>Informações gerais</h2><div class="fg">
+   <div class="f"><label for="cod">Código do dispositivo <i>*</i></label><input id="cod" name="codigo" placeholder="Ex.: DMP010100" required></div>
+   <div class="f"><label for="prod">Produto <i>*</i></label><select id="prod" name="produto" required><option value="">Selecione o produto</option><option>Plataforma Dianteira</option><option>Base de Corte</option></select></div>
+   <div class="f"><label for="dt">⦁	Data de início  <i>*</i></label><input id="dt" name="data" type="date" required></div>
+   <div class="f"><label for="os">Ordem de serviço <i>*</i></label><input id="os" name="os" placeholder="Ex.: OS-000123" required></div>
+   <div class="f">
+    <label for="rm">Responsável pela manutenção <i>*</i></label>
+    <input type="text" id="rm" name="resp_manut" placeholder=" Nome do Responsável" disabled>
+</div>
+ <div class="f"><label for="tipo">Tipo <i>*</i></label><select id="tipo" name="tipo" required data-tipos><option value="">Selecione o tipo</option></select></div>
+  </div></section>
 
         </div>
 
