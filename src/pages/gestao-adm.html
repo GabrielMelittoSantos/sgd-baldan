@@ -25,13 +25,13 @@
         </select>
         <select id="fTipo" aria-label="Filtrar por tipo de dispositivo"></select>
         <select id="fLaudo" aria-label="Filtrar por tipo de laudo"></select>
-        <label class="search"><span data-ic="search"></span><input id="busca" type="search" placeholder="Buscar O.S., DMP, responsável, tipo, produto, datas, status ou custos…" aria-label="Buscar laudos"></label>
+        <label class="search"><span data-ic="search"></span><input id="busca" type="search" placeholder="Buscar O.S., número do dispositivo, responsável, tipo, produto, datas, status ou custos…" aria-label="Buscar laudos"></label>
       </div>
     </div>
 
     <div class="tw mt"><table>
       <thead><tr>
-        <th>O.S.</th><th>DMP</th><th>Responsável</th><th>Tipo de dispositivo</th><th>Tipo de laudo</th><th>Data inicial</th><th>Data final</th><th>Produto</th><th>Última atualização</th><th>Status</th><th>Custo material</th><th>Custo mão de obra</th><th>Selecionar</th>
+        <th>O.S.</th><th>Número do Dispositivo</th><th>Responsável</th><th>Tipo de dispositivo</th><th>Tipo de laudo</th><th>Data inicial</th><th>Data final</th><th>Produto</th><th>Última atualização</th><th>Status</th><th>Custo material</th><th>Custo mão de obra</th><th>Selecionar</th>
       </tr></thead>
       <tbody id="laudos"></tbody>
     </table></div>
@@ -65,6 +65,15 @@
       <button class="btn pri" type="submit">Adicionar tipo</button>
     </form>
   </section>
+  <section class="card" id="produtosCard">
+    <h2><span data-ic="grid"></span>Produtos</h2>
+    <p class="sub card__lead">Lista usada no campo “Produto” dos laudos de liberação, corretiva e preventiva. Só a gestão adiciona novos produtos.</p>
+    <div class="tipos" id="produtosLista"></div>
+    <form class="tipo-form" id="produtoForm" autocomplete="off">
+      <div class="f"><label for="produtoNome">Novo produto</label><input id="produtoNome" maxlength="40" placeholder="Ex.: Plataforma Traseira"></div>
+      <button class="btn pri" type="submit">Adicionar produto</button>
+    </form>
+  </section>
 </main>
 </div></div>
 
@@ -80,6 +89,7 @@
 <script src="../services/auth.js"></script>
 <script src="../services/laudos.js"></script>
 <script src="../services/tipos.js"></script>
+<script src="../services/produtos.js"></script>
 <script src="../js/layout.js"></script>
 <script>
 SGD.shell('gestao-adm');
@@ -216,6 +226,23 @@ $('#tiposLista').addEventListener('click', (e) => {
   try { Tipos.remover(b.dataset.rm); drawTipos(); SGD.toast('Tipo removido'); } catch (err) { SGD.toast(err.message, 4500); }
 });
 drawTipos();
+
+/* ---- Produtos (somente gestão) ---- */
+function drawProdutos() {
+  $('#produtosLista').innerHTML = Produtos.listar().map((p) =>
+    `<span class="tipo-item"><span class="pill" style="--pill:#5b6b82">${esc(p.nome)}</span>${p.padrao ? '' : `<button type="button" class="btn-icon" data-rm="${esc(p.nome)}" aria-label="Remover produto ${esc(p.nome)}" title="Remover produto">${SGD.ic('trash')}</button>`}</span>`).join('');
+}
+$('#produtoForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  try { const n = Produtos.adicionar($('#produtoNome').value); $('#produtoNome').value = ''; drawProdutos(); SGD.toast('Produto “' + n + '” adicionado'); }
+  catch (err) { SGD.toast(err.message, 4500); }
+});
+$('#produtosLista').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-rm]'); if (!b) return;
+  if (!confirm('Remover o produto “' + b.dataset.rm + '”? Laudos que já usam esse produto continuam com o nome.')) return;
+  try { Produtos.remover(b.dataset.rm); drawProdutos(); SGD.toast('Produto removido'); } catch (err) { SGD.toast(err.message, 4500); }
+});
+drawProdutos();
 </script>
 </body>
 </html>

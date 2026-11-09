@@ -45,7 +45,7 @@
 
   /* Campos simples do formulário (ignora linhas dinâmicas dentro de [data-rows]) */
   const simple = (f) => { const o = {}; [...f.elements].forEach((e) => { if (!e.name || e.closest('[data-rows]')) return; if (e.type === 'radio') { if (e.checked) o[e.name] = e.value; } else if (e.type !== 'file') o[e.name] = e.value; }); return o; };
-  const fill = (f, o) => Object.entries(o || {}).forEach(([k, v]) => { const e = f.elements[k]; if (e && typeof v === 'string') e.value = v; });
+  const fill = (f, o) => Object.entries(o || {}).forEach(([k, v]) => { const e = f.elements[k]; if (e && typeof v === 'string') { if (e.tagName === 'SELECT' && v && ![...e.options].some((o) => o.value === v)) e.add(new Option(v, v)); e.value = v; } });
   const aviso = (f, msg) => f.insertAdjacentHTML('afterbegin', `<div class="banner" role="status">${esc(msg)}</div>`);
   const bloquear = (f, msg) => { aviso(f, msg); f.querySelectorAll('input,select,textarea,button').forEach((e) => (e.disabled = true)); };
 

@@ -136,7 +136,6 @@ td small { display: block; color: var(--muted); font-size: .74rem; }
 tr.row { cursor: pointer; }
 tr.row:hover { background: var(--panel-2); }
 .dev { display: flex; gap: .8rem; align-items: center; }
-.thumb { width: 44px; height: 44px; border-radius: var(--radius-sm); background: linear-gradient(135deg, #46566b, #1a2433); flex-shrink: 0; }
 
 /* ---------- Formulários ---------- */
 .f { display: grid; gap: .35rem; }

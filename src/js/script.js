@@ -22,6 +22,32 @@
   const PAGINA_NORMAL = 'src/pages/inicio.html';
   const PAGINA_ADMIN = 'src/pages/gestao-adm.html';
 
+  /* ---------- Modal: sobre o projeto ---------- */
+  const aboutModal = document.getElementById('aboutModal');
+  const openAbout = document.getElementById('openAbout');
+  const closeAbout = document.getElementById('closeAbout');
+  const aboutDialog = aboutModal.querySelector('.about-dialog');
+  let previousFocus = null;
+  function showAbout() {
+    previousFocus = document.activeElement;
+    aboutModal.classList.add('is-open');
+    aboutModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('about-open');
+    aboutDialog.focus(); closeAbout.focus();
+  }
+  function hideAbout() {
+    aboutModal.classList.remove('is-open');
+    aboutModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('about-open');
+    if (previousFocus) previousFocus.focus();
+  }
+  openAbout.addEventListener('click', showAbout);
+  closeAbout.addEventListener('click', hideAbout);
+  aboutModal.querySelectorAll('[data-close-about]').forEach((element) => element.addEventListener('click', hideAbout));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && aboutModal.classList.contains('is-open')) hideAbout();
+  });
+
   /* ---------- Mostrar / ocultar senha ---------- */
   toggleBtn.addEventListener('click', () => {
     const show = inputPass.type === 'password';

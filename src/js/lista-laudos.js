@@ -33,8 +33,8 @@
     tb.innerHTML = l.map((x) => {
       const d = SGD.devices.find((v) => v.cod === x.dados.codigo) || {};
       const abrir = x.status === 'reprovado' ? 'Refazer laudo' : Laudos.editavel(x) ? 'Abrir laudo' : 'Visualizar laudo';
-      return `<tr class="row" data-id="${x.id}"><td><div class="dev"><span class="thumb"></span><div><b>${SGD.esc(x.dados.codigo || '—')}</b><small>${SGD.esc(d.desc || '')}</small></div></div></td>
-        <td>${SGD.esc(x.dados.produto || d.produto || '—')}<small>Baldan</small></td><td>${SGD.esc(x.autorNome)}<small>Ferramentaria</small></td>
+      return `<tr class="row" data-id="${x.id}"><td><div class="dev"><div><b>${SGD.esc(x.dados.codigo || '—')}</b><small>${SGD.esc(d.desc || '')}</small></div></div></td>
+        <td>${SGD.esc(x.dados.produto || d.produto || '—')}</td><td>${SGD.esc(x.autorNome)}</td>
         <td>${Tipos.pill(x.dados.tipo)}</td>
         <td>${fmt(x.atualizado)}</td>
         <td><span class="pill pill--${PILL[x.status]}">${Laudos.STATUS[x.status]}</span><small class="nota" title="${SGD.esc(nota(x))}">${SGD.esc(nota(x))}</small></td>

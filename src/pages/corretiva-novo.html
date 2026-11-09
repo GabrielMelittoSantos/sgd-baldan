@@ -4,8 +4,8 @@
  <div class="head"><span class="badge-ic" data-ic="file"></span><div><h1>Novo laudo de corretiva</h1><p class="sub">Registre a falha, analise a causa raiz utilizando o método Ishikawa e descreva as ações corretivas.</p></div></div>
  <div class="">
   <section class="card"><h2><span data-ic="file"></span>Informações gerais</h2><div class="fg">
-   <div class="f"><label for="cod">Código do dispositivo <i>*</i></label><input id="cod" name="codigo" placeholder="Ex.: DMP010100" required></div>
-   <div class="f"><label for="prod">Produto <i>*</i></label><select id="prod" name="produto" required><option value="">Selecione o produto</option><option>Plataforma Dianteira</option><option>Base de Corte</option></select></div>
+   <div class="f"><label for="cod">Número do dispositivo <i>*</i></label><input id="cod" name="codigo" placeholder="Ex.: DMP010100" required></div>
+   <div class="f"><label for="prod">Produto <i>*</i></label><select id="prod" name="produto" required data-produtos><option value="">Selecione o produto</option></select></div>
    <div class="f"><label for="dt">⦁	Data de início  <i>*</i></label><input id="dt" name="data" type="date" required></div>
    <div class="f"><label for="os">Ordem de serviço <i>*</i></label><input id="os" name="os" placeholder="Ex.: OS-000123" required></div>
    <div class="f">
@@ -51,8 +51,7 @@
                     name="descricao_falha"
                     maxlength="1500"
                     required
-                    placeholder="Descreva detalhadamente o problema identificado no dispositivo...">
-                </textarea>
+                    placeholder="Descreva detalhadamente o problema identificado no dispositivo..."></textarea>
             </div>
 
             <div class="sgd-corretiva-ocorrencia-controle-voz">
@@ -170,8 +169,7 @@
                     id="causas_sugeridas"
                     name="causas_sugeridas"
                     maxlength="1500"
-                    placeholder="Possíveis causas sugeridas pela IA...">
-                </textarea>
+                    placeholder="Possíveis causas sugeridas pela IA..."></textarea>
             </div>
 
         </div>
@@ -277,7 +275,7 @@
 
  <section class="card"><div class="f"><label for="obs">Outras informações</label><textarea id="obs" name="obs" placeholder="Observações, anexos ou registros adicionais"></textarea></div></section>
  <div class="actions"><a class="btn" href="corretiva.html"><span data-ic="x"></span>Cancelar</a><button class="btn" type="submit"><span data-ic="save"></span>Salvar laudo</button><button class="btn pri" type="button" id="concluir"><span data-ic="file"></span>Concluir e enviar</button></div>
-</form></main></div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../services/tipos.js"></script><script src="../js/layout.js"></script><script src="../js/laudo-reuso.js"></script><script>
+</form></main></div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../services/tipos.js"></script><script src="../services/produtos.js"></script><script src="../js/layout.js"></script><script src="../js/laudo-reuso.js"></script><script>
 SGD.shell('dispositivos');
 const T='corretiva',$=s=>document.querySelector(s),f=$('#f'),A=$('#acts'),fish=$('#fish'),esc=SGD.esc;
 const M=$('#medidas'),C=$('#check'),K=['desc','espec','min','max','metodo','medicao'],params=new URLSearchParams(location.search);
@@ -288,7 +286,7 @@ fish.innerHTML=CATS.map((c,i)=>`<div class="cat sgd-ishikawa__category sgd-ishik
  <div class="sgd-ishikawa__category-header"><span class="sgd-ishikawa__category-icon">${['✿','⚙','⬡','♙','◎','♧'][i]}</span><h3>${c}</h3><button type="button" data-add aria-label="Adicionar causa em ${c}" title="Adicionar causa">+</button></div>
  <div class="sgd-ishikawa__causes">${cause(c)+cause(c)+cause(c)}</div>
  </div>`).join('')+
- `<div class="cat cat--root sgd-ishikawa__root"><div class="sgd-ishikawa__root-icon">!</div><h3>CAUSA RAIZ</h3><p>Selecione ou descreva a causa raiz principal.</p><textarea id="root" name="causa_raiz" maxlength="500" required placeholder="Descreva a causa raiz identificada…"></textarea><div class="sgd-ishikawa__root-counter"><small id="rc">0/500</small></div></div>`;
+ `<div class="cat cat--root sgd-ishikawa__root"><div class="sgd-ishikawa__root-icon">!</div><h3>Efeito <i style="color:#fb7185">*</i></h3><p>Selecione ou descreva a causa raiz principal.</p><textarea id="root" name="causa_raiz" maxlength="500" required placeholder="Descreva a causa raiz identificada…"></textarea><div class="sgd-ishikawa__root-counter"><small id="rc">0/500</small></div></div>`;
 const act=(a={})=>A.insertAdjacentHTML('beforeend',`<div class="action"><div class="fg"><div class="f"><label>O que fazer? <i>*</i></label><textarea data-k="oque" maxlength="1000" required aria-label="O que fazer?" placeholder="Descreva a ação corretiva a ser realizada…">${esc(a.oque)}</textarea></div><div class="f"><label>Como fazer? <i>*</i></label><textarea data-k="como" maxlength="1000" required aria-label="Como fazer?" placeholder="Descreva o passo a passo da execução…">${esc(a.como)}</textarea></div></div><button type="button" class="btn-icon" data-del aria-label="Remover ação">${X}</button></div>`);
 const dados=()=>({...SGD.simple(f),
  causas:Object.fromEntries([...fish.querySelectorAll('.cat[data-cat]')].map(c=>[c.dataset.cat,[...c.querySelectorAll('.cause input')].map(i=>i.value.trim()).filter(Boolean)])),
@@ -357,10 +355,15 @@ $('#ia-mic').onclick=()=>{const R=window.SpeechRecognition||window.webkitSpeechR
  const r=new R();r.lang='pt-BR';r.onresult=e=>{$('#relato').value=e.results[0][0].transcript;resumo()};r.start()};
 $('#relato').onchange=resumo; /* TODO: fetch('/api/ia/causa-raiz') */
 
+// Nome legível do campo para avisar exatamente o que falta preencher
+const rotulo=i=>{if(i.id==='root')return 'Causa raiz (Efeito)';if(i.dataset.k==='oque')return 'Plano de ação — O que fazer?';if(i.dataset.k==='como')return 'Plano de ação — Como fazer?';
+ const l=i.id&&f.querySelector('label[for="'+i.id+'"]');return l?l.textContent.replace(/[*⦁]/g,'').replace(/\s+/g,' ').trim():(i.name||'campo')};
+f.addEventListener('input',e=>e.target.classList&&e.target.classList.remove('bad'));
 function gravar(status){
- const req=status==='pendente'?[...f.querySelectorAll('[required]')]:[$('#cod')];let ok=true;
- req.forEach(i=>{const b=!i.value.trim();i.classList.toggle('bad',b);if(b)ok=false});
- if(!ok)return SGD.toast('Preencha os campos obrigatórios.');
+ const req=status==='pendente'?[...f.querySelectorAll('[required]')]:[$('#cod')];let ok=true;const faltam=[];
+ req.forEach(i=>{const b=!i.value.trim();i.classList.toggle('bad',b);if(b){ok=false;faltam.push(rotulo(i))}});
+ if(!ok){const p=req.find(i=>i.classList.contains('bad'));if(p){p.scrollIntoView({behavior:'smooth',block:'center'});p.focus({preventScroll:true})}
+  return SGD.toast('Preencha os campos obrigatórios: '+[...new Set(faltam)].join(', ')+'.',7000)}
  [...M.rows].forEach(atualizarLinha);
  try{Laudos.salvar({id:atual&&atual.id,tipo:T,status,dados:dados()});SGD.toast(status==='pendente'?'Laudo enviado para aprovação do gerente':'Laudo salvo');setTimeout(()=>location.href='corretiva.html',900)}
  catch(err){SGD.toast(err.message,4500)}}

@@ -25,7 +25,7 @@
             <p class="sub">Lista completa de dispositivos cadastrados no sistema.</p>
           </div><span class="sp"></span>
           <label class="search"><span data-ic="search"></span><input id="q"
-              placeholder="Buscar por dispositivo, produto, responsável, tipo, laudos, atualização ou status…" aria-label="Buscar"></label>
+              placeholder="Buscar por número do dispositivo, produto, responsável, tipo, laudos, atualização ou status…" aria-label="Buscar"></label>
           <select id="fTipo" aria-label="Filtrar por tipo"></select>
           <select id="fStatus" aria-label="Filtrar por status">
             <option value="">Todos os status</option>
@@ -45,7 +45,7 @@
           <table>
             <thead>
               <tr>
-                <th>Dispositivo</th>
+                <th>Número do Dispositivo</th>
                 <th>Produto</th>
                 <th>Responsável</th>
                 <th>Tipo</th>
@@ -122,7 +122,7 @@
       cnt.textContent = `Mostrando ${l.length} de ${todos.length} dispositivos`;
       tb.innerHTML = l.map(d => {
         const s = statusDe(d);
-        return `<tr class="row" tabindex="0" data-c="${esc(d.cod)}"><td><div class="dev"><span class="thumb"></span><div><b>${esc(d.cod)}</b></div></div></td><td>${esc(d.produto)}</td><td>${esc(d.resp)}</td><td>${Tipos.pill(d.tipo)}</td><td><div class="lbs">${LAUDOS.map(x => lb(d, x)).join('')}</div></td><td>${esc(d.upd)}</td><td><span class="dot dot--${s.st}"></span>${ST[s.st]}${s.de ? `<small>${s.de}</small>` : ''}</td></tr>`
+        return `<tr class="row" tabindex="0" data-c="${esc(d.cod)}"><td><div class="dev"><div><b>${esc(d.cod)}</b></div></div></td><td>${esc(d.produto)}</td><td>${esc(d.resp)}</td><td>${Tipos.pill(d.tipo)}</td><td><div class="lbs">${LAUDOS.map(x => lb(d, x)).join('')}</div></td><td>${esc(d.upd)}</td><td><span class="dot dot--${s.st}"></span>${ST[s.st]}${s.de ? `<small>${s.de}</small>` : ''}</td></tr>`
       }).join('') || '<tr><td colspan="7" class="empty">Nenhum dispositivo encontrado. Ajuste a busca ou os filtros.</td></tr>';
       renderStats(todos);
     }
