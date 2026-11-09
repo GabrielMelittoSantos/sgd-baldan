@@ -36,7 +36,7 @@
  <section class="card"><div class="head head--flush"><h2>Checklist</h2><span class="sp"></span><button type="button" id="addC" class="btn sm"><span data-ic="plus"></span>Adicionar item</button></div>
   <div class="tw mt"><table class="tbl"><thead><tr><th>Nº</th><th>Descrição</th><th>Resultado</th><th><span class="sr-only">Remover</span></th></tr></thead><tbody id="check" data-rows></tbody></table></div></section>
  <div class="actions"><a class="btn" href="liberacao.html"><span data-ic="x"></span>Cancelar</a><button class="btn" type="submit"><span data-ic="save"></span>Salvar laudo</button><button class="btn pri" type="button" id="concluir"><span data-ic="file"></span>Concluir e enviar</button></div>
-</form></main></div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../services/tipos.js"></script><script src="../js/layout.js"></script><script>
+</form></main></div></div><script src="../services/auth.js"></script><script src="../services/laudos.js"></script><script src="../services/tipos.js"></script><script src="../js/layout.js"></script><script src="../js/laudo-reuso.js"></script><script>
 SGD.shell('dispositivos');
 const T='liberacao',$=s=>document.querySelector(s),f=$('#f'),M=$('#medidas'),C=$('#check'),K=['desc','espec','min','max','metodo','medicao'];
 const params=new URLSearchParams(location.search);let uid=0,atual=null;
@@ -78,7 +78,8 @@ const crow=(c={})=>{const n=++uid;C.insertAdjacentHTML('beforeend',`<tr><td></td
 const dados=()=>({...SGD.simple(f),
  medidas:[...M.rows].map(r=>{const m=Object.fromEntries(K.map((k,i)=>[k,r.cells[i+1].querySelector('input, select').value])),x=r.querySelector('.resultado-medida');
   m.res=x.classList.contains('aprovado')?'a':x.classList.contains('reprovado')?'r':'';return m}),
- checklist:[...C.rows].map(r=>({desc:r.cells[1].textContent,res:r.querySelector('input:checked').value}))});
+ checklist:[...C.rows].map(r=>({desc:r.cells[1].textContent,res:r.querySelector('input:checked').value})),
+ desenho:Reuso.desenho()});
 
 f.addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;const tb=b.closest('tbody');
  if(tb.rows.length<=1)return SGD.toast('Mantenha ao menos uma linha.');b.closest('tr').remove();renum(tb)});
@@ -87,7 +88,8 @@ $('#addM').onclick=()=>mrow();
 M.addEventListener('input',e=>{const r=e.target.closest('tr');if(r)atualizarLinha(r)});
 M.addEventListener('change',e=>{const r=e.target.closest('tr');if(r)atualizarLinha(r)});
 $('#addC').onclick=()=>{const t=(prompt('Descrição do item')||'').trim();if(t)crow({desc:t})};
-$('#file').onchange=e=>{const x=e.target.files[0];if(x)$('#prev').innerHTML=`<img alt="Desenho técnico" src="${URL.createObjectURL(x)}">`};
+// Importação do desenho (salvo junto com o laudo) + reaproveitamento de dados de laudos do mesmo dispositivo
+const Reuso=LaudoReuso.iniciar({tipo:T,f,M,C,mrow,crow,prev:$('#prev'),file:$('#file'),atual:()=>atual});
 
 function gravar(status){
  const req=status==='pendente'?[...f.querySelectorAll('[required]')]:[$('#cod')];let ok=true;
@@ -100,9 +102,10 @@ $('#concluir').onclick=()=>gravar('pendente');
 
 const id=params.get('id');
 if(id){atual=Laudos.obter(id);if(!atual||atual.tipo!==T)location.replace('liberacao.html')}
-if(atual){const d=atual.dados;SGD.fill(f,d);(d.medidas||[]).forEach(mrow);(d.checklist||[]).forEach(crow);
+if(atual){const d=atual.dados;SGD.fill(f,d);(d.medidas||[]).forEach(mrow);(d.checklist||[]).forEach(crow);Reuso.restaurar(d.desenho);
  if(!Laudos.editavel(atual))SGD.bloquear(f,Laudos.msgLeitura(atual));else if(atual.status==='reprovado')SGD.aviso(f,Laudos.msgReprovado(atual))}
 else{for(let i=0;i<4;i++)mrow();['Conferir esquadro de todos os conjuntos','Aperto de todos os parafusos','Lubrificação de todos os componentes','Presença de solda em toda a solda (se aplicável)'].forEach(desc=>crow({desc}));
  if(params.get('cod'))$('#cod').value=params.get('cod');
+ Reuso.sugerir();
  if(Laudos.vagas(T)<=0)SGD.bloquear(f,Laudos.msgLimite(T))}
 </script></body></html>

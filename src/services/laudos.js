@@ -9,7 +9,7 @@
 (function () {
   'use strict';
   const KEY = 'sgd:laudos';
-  const LIMITE = 5; // ← altere aqui o limite da fila
+  const LIMITE = 20; // ← altere aqui o limite da fila
   const TIPOS = { liberacao: 'liberação', corretiva: 'corretiva', preventiva: 'preventiva' };
   const STATUS = { andamento: 'Em andamento', pendente: 'Aguardando gerente', reprovado: 'Refazer documento', aprovado: 'Aprovado' };
 

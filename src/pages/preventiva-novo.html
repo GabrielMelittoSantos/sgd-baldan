@@ -74,7 +74,7 @@
         <!-- CABEÇALHO -->
         <div class="head">
 
-          <span class="badge-ic" data-ic="file"></span>
+          <span class="badge-ic" data-ic="cal"></span>
 
           <div>
             <h1>Novo laudo de Preventiva</h1>
@@ -88,7 +88,7 @@
         <!-- INFORMAÇÕES GERAIS -->
         <div class="split">
 
-       <section class="card"><h2><span data-ic="file"></span>Informações gerais</h2><div class="fg">
+       <section class="card"><h2><span data-ic="cal"></span>Informações gerais</h2><div class="fg">
    <div class="f"><label for="cod">Código do dispositivo <i>*</i></label><input id="cod" name="codigo" placeholder="Ex.: DMP010100" required></div>
    <div class="f"><label for="prod">Produto <i>*</i></label><select id="prod" name="produto" required><option value="">Selecione o produto</option><option>Plataforma Dianteira</option><option>Base de Corte</option></select></div>
    <div class="f"><label for="dt">⦁	Data de início  <i>*</i></label><input id="dt" name="data" type="date" required></div>
@@ -108,7 +108,7 @@
           <section class="card">
 
             <h2>
-              <span data-ic="file"></span>
+              <span data-ic="cal"></span>
               Desenho técnico
             </h2>
 
@@ -245,6 +245,7 @@
 <script src="../services/laudos.js"></script>
 <script src="../services/tipos.js"></script>
 <script src="../js/layout.js"></script>
+<script src="../js/laudo-reuso.js"></script>
 
 <script>
 
@@ -748,30 +749,13 @@ $('#addC').onclick = () => {
 // IMPORTAR DESENHO TÉCNICO
 // ==========================================
 
-$('#file').onchange = e => {
-
-  const x = e.target.files[0];
-
-  if (!x) return;
-
-  const url = URL.createObjectURL(x);
-
-  if (x.type.startsWith('image/')) {
-
-    $('#prev').innerHTML = `
-      <img
-        alt="Desenho técnico"
-        src="${url}"
-      >
-    `;
-
-  } else {
-
-    $('#prev').textContent = x.name;
-
-  }
-
-};
+// O desenho agora é salvo junto com o laudo e os dados (desenho, medidas e
+// checklist) são reaproveitados de laudos do mesmo dispositivo — ver laudo-reuso.js
+const Reuso = LaudoReuso.iniciar({
+  tipo: T, f, M, C, mrow, crow,
+  prev: $('#prev'), file: $('#file'),
+  atual: () => atual
+});
 
 
 // ==========================================
@@ -818,7 +802,9 @@ const dados = () => ({
 
     res: (r.querySelector('input:checked') || {}).value || ''
 
-  }))
+  })),
+
+  desenho: Reuso.desenho()
 
 });
 
@@ -963,6 +949,9 @@ if (atual) {
 
   });
 
+  // Recupera o desenho técnico.
+  Reuso.restaurar(d.desenho);
+
 
   if (!Laudos.editavel(atual)) {
 
@@ -1020,6 +1009,9 @@ else {
     $('#cod').value = params.get('cod');
 
   }
+
+  // Busca desenho/medidas/checklist de outros laudos do mesmo dispositivo.
+  Reuso.sugerir();
 
 
   // Verifica limite de laudos.

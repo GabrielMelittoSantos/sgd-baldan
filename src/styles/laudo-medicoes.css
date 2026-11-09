@@ -1,0 +1,26 @@
+/* SGD • Desenho técnico, medidas e checklist (usado na tela de corretiva)
+   Mesmo visual de liberacao-novo.html / preventiva-novo.html.
+   Não importa liberacao-novo.css de propósito: ele altera o layout de .split. */
+
+/* Desenho técnico */
+.sgd-desenho .drop { min-height: 220px; width: 100%; overflow: hidden; }
+.sgd-desenho #prev { display: flex; align-items: center; justify-content: center; width: 100%; }
+.sgd-desenho #prev img { display: block; max-width: 100%; max-height: 420px; object-fit: contain; border-radius: 8px; background: #fff; }
+.sgd-desenho #prev a { color: var(--blue-link); text-decoration: underline; }
+
+/* Tabelas */
+.tbl { min-width: 900px; }
+.tbl th, .tbl td { padding: .5rem .6rem; }
+.tbl input:not([type=radio]):not([type=checkbox]) { padding: .35rem .5rem; min-height: 32px; min-width: 80px; }
+.tbl input[type=checkbox], .tbl input[type=radio], .res input { width: auto; min-height: 0; accent-color: var(--acc); }
+.res { display: flex; gap: 1rem; }
+.res label { display: flex; gap: .3rem; align-items: center; }
+
+/* Campos calculados automaticamente */
+.tbl .limite-auto { background: #f1f5f9; color: #64748b; font-weight: 600; cursor: not-allowed; }
+
+/* Resultado da medição */
+.resultado-medida { display: inline-flex; align-items: center; justify-content: center; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.resultado-medida.pendente { background: #f1f5f9; color: #64748b; }
+.resultado-medida.aprovado { background: #dcfce7; color: #15803d; }
+.resultado-medida.reprovado { background: #fee2e2; color: #dc2626; }

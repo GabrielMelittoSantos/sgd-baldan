@@ -103,7 +103,7 @@
     const lb = (d, x) => {
       const n = d.cont[x.t], tem = !!d.ultimoPorTipo[x.t], on = sel[d.cod] === x.t;
       const dica = on
-        ? (tem ? `Clique novamente para abrir o laudo de ${x.nome}` : `Este dispositivo não tem laudo de ${x.nome}`)
+        ? (tem ? `Clique novamente para abrir o laudo de ${x.nome}` : `Este dispositivo não tem laudo de ${x.nome}. Clique novamente para criar um novo`)
         : `${n} laudo(s) de ${x.nome} aprovado(s). Clique para ver o status`;
       return `<button type="button" class="lb lb--${x.k}${tem ? '' : ' lb--off'}${on ? ' lb--on' : ''}" data-l="${x.t}" aria-pressed="${on}" title="${dica}">${x.k.toUpperCase()} ${n}</button>`;
     };
@@ -150,7 +150,8 @@
       if (sel[d.cod] === t) {                     // 2º clique: abre o laudo direto
         const l = d.ultimoPorTipo[t];
         if (l) location.href = t + '-novo.html?id=' + encodeURIComponent(l.id);
-        else SGD.toast('Este dispositivo ainda não tem laudo de ' + nome + '.');
+        else if (confirm('Este dispositivo ainda não tem laudo de ' + nome + '.\n\nCriar um novo? O desenho técnico, as medidas e o checklist já registrados nos outros laudos deste dispositivo serão preenchidos automaticamente.'))
+          location.href = t + '-novo.html?cod=' + encodeURIComponent(d.cod);
         return;
       }
       sel[d.cod] = t; draw();                     // 1º clique: mostra o status desse laudo
