@@ -9,7 +9,7 @@
     { re: 'vinicius.urbano', email: 'vinicius.urbano@baldan.com.br', nome: 'Vinicius Urbano', setor: 'Ferramentaria Baldan', perfil: 'Projetista/Operacional', hash: SENHA_DEMO },
     { re: 'carlos.silva', email: 'carlos.silva@baldan.com.br', nome: 'Carlos Silva', setor: 'Ferramentaria Baldan', perfil: 'Projetista/Operacional', hash: SENHA_DEMO },
     { re: 'rafael.costa', email: 'rafael.costa@baldan.com.br', nome: 'Rafael Costa', setor: 'Ferramentaria Baldan', perfil: 'Projetista/Operacional', hash: SENHA_DEMO },
-    { re: 'baldan', email: 'baldan@gmail.com', nome: 'Administrador Baldan', setor: 'Administração', perfil: 'Programador', hash: SENHA_DEMO, admin: true }
+    { re: 'baldan', email: 'baldan@gmail.com', nome: 'Programador', setor: 'Administração', perfil: 'Programador', hash: SENHA_DEMO, admin: true }
   ];
 
   const K_USUARIOS = 'sgd:usuarios';

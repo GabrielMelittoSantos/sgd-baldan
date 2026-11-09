@@ -29,17 +29,17 @@
 
   function draw() {
     const t = q.value.toLowerCase();
-    const l = Laudos.ativos(T).filter((x) => JSON.stringify([x.dados.codigo, x.dados.produto, x.autorNome, x.dados.tipo, Laudos.STATUS[x.status]]).toLowerCase().includes(t));
+    const l = Laudos.ativos(T).filter((x) => JSON.stringify([x.dados.codigo, x.dados.produto, x.dados.tipo, Laudos.STATUS[x.status]]).toLowerCase().includes(t));
     tb.innerHTML = l.map((x) => {
       const d = SGD.devices.find((v) => v.cod === x.dados.codigo) || {};
       const abrir = x.status === 'reprovado' ? 'Refazer laudo' : Laudos.editavel(x) ? 'Abrir laudo' : 'Visualizar laudo';
       return `<tr class="row" data-id="${x.id}"><td><div class="dev"><div><b>${SGD.esc(x.dados.codigo || '—')}</b><small>${SGD.esc(d.desc || '')}</small></div></div></td>
-        <td>${SGD.esc(x.dados.produto || d.produto || '—')}</td><td>${SGD.esc(x.autorNome)}</td>
+        <td>${SGD.esc(x.dados.produto || d.produto || '—')}</td>
         <td>${Tipos.pill(x.dados.tipo)}</td>
         <td>${fmt(x.atualizado)}</td>
         <td><span class="pill pill--${PILL[x.status]}">${Laudos.STATUS[x.status]}</span><small class="nota" title="${SGD.esc(nota(x))}">${SGD.esc(nota(x))}</small></td>
         <td><div class="row-actions"><a class="btn-icon" href="${T}-novo.html?id=${x.id}" aria-label="${abrir}" title="${abrir}">${SGD.ic('chev')}</a>${x.status === 'andamento' ? `<button type="button" class="btn-icon" data-del aria-label="Excluir laudo">${SGD.ic('trash')}</button>` : ''}</div></td></tr>`;
-    }).join('') || '<tr><td colspan="7" class="empty">Nenhum laudo por aqui. Clique em “Novo laudo” para começar.</td></tr>';
+    }).join('') || '<tr><td colspan="6" class="empty">Nenhum laudo por aqui. Clique em “Novo laudo” para começar.</td></tr>';
   }
 
   tb.addEventListener('click', (e) => {
