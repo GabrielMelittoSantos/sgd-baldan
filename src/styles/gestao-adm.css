@@ -3,7 +3,7 @@
 .sel:disabled { cursor: not-allowed; }
 .approval-footer { display: flex; align-items: center; gap: var(--gap-sm); margin-top: 1rem; flex-wrap: wrap; }
 .approval-count { color: var(--muted); }
-.filters { display: flex; gap: var(--gap-sm); flex-wrap: wrap; align-items: center; }
+.filters { display: flex; gap: var(--gap-sm); flex-wrap: wrap; align-items: center; justify-content: flex-end; margin-left: auto; }
 .filters select { width: auto; min-width: 200px; }
 .custo { width: 110px; min-height: 34px; padding: .35rem .5rem; }
 .moeda { color: var(--muted); font-size: .8rem; margin-right: .3rem; }
@@ -25,3 +25,17 @@ dialog form { display: grid; gap: var(--gap-sm); }
 #usuariosCard .perfil-autorizado { min-width: 190px; max-width: 240px; }
 #usuariosCard td .btn { display: inline-flex; height: 34px; padding: 0 .7rem; margin: .15rem; font-size: .75rem; letter-spacing: .02em; text-transform: none; }
 #usuariosCard td .btn:not(.pri) { background: transparent; border: 1px solid var(--line); color: var(--text); box-shadow: none; }
+#usuariosCard table { min-width: 980px; }
+#usuariosCard th { padding: 1rem 1.8rem; letter-spacing: .07em; }
+#usuariosCard td { padding: 1rem 1.8rem; }
+#usuariosCard td .btn { margin: .15rem .35rem .15rem 0; }
+
+/* Títulos dos cards (Laudos enviados / Solicitações de acesso) */
+.head--flush h2, #tiposCard h2 { font-size: 1.55rem; }
+.head--flush h2 .pill { font-size: .95rem; vertical-align: middle; margin-left: .35rem; }
+#usuariosCard .card__lead { font-size: 1.05rem; margin-top: .45rem; }
+#tiposCard > h2 { margin-bottom: .8rem; }
+#tiposCard .card__lead { font-size: 1.05rem; margin-top: 0; }
+
+/* Subtítulo do topo da página (mesmo tamanho do "Confira os dados…") */
+main > .head .sub { font-size: 1.05rem; }

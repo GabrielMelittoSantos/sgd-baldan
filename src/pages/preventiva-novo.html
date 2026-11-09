@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -250,6 +249,13 @@
 <script>
 
 SGD.shell('dispositivos');
+
+/* Responsável pela manutenção = usuário logado (só preenche se o campo estiver vazio, para não sobrescrever laudo já salvo) */
+document.addEventListener('DOMContentLoaded', () => {
+  const sessao = Auth.sessao();
+  const rm = document.getElementById('rm');
+  if (sessao && rm && !rm.value) rm.value = sessao.nome;
+});
 
 const T = 'preventiva';
 

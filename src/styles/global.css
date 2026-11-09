@@ -83,7 +83,7 @@ h2 { font: 600 1.05rem var(--font-title); }
 .logo__mark {width: 30px;}
 .boxLogo{display: flex; align-items: center;gap: 0.5rem;}
 .top { display: flex; align-items: center; gap: 1rem; padding: .9rem 1.6rem; border-bottom: 1px solid var(--line); }
-.top .sgd { font: italic 800 2rem var(--font-brand);display:flex;align-items:center;gap: 0.4rem; }
+.top .sgd { font: 700 1.9rem var(--font-title);display:flex;align-items:center;gap: 0.4rem; }
 .sgd img {
   width: 32px;
   height: 32px;
@@ -103,7 +103,8 @@ main { padding: 1.6rem; display: grid; gap: var(--gap); align-content: start; }
 /* ---------- Cabeçalho de página ---------- */
 .head { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
 .head--flush h2 { margin: 0; }
-.back { color: var(--text-soft); display: inline-flex; gap: .5rem; align-items: center; margin-bottom: -.4rem; }
+.back { color: var(--text-soft); display: inline-flex; gap: .6rem; align-items: center; margin-bottom: -.4rem; font-size: 1.15rem; font-weight: 600; padding: .5rem .3rem; }
+.back svg { width: 28px; height: 28px; }
 .badge-ic { width: 52px; height: 52px; border-radius: var(--radius); background: var(--acc); color: var(--on-acc); display: grid; place-items: center; }
 .badge-ic svg {
   width: 32px !important;
