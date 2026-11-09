@@ -37,7 +37,7 @@
           <span class="brand__divider"></span>
           <span class="brand__desc">Sistema de Gestão<br>de Dispositivos</span>
         </header>
-
+        <h1 class="title">SGD</h1>
         <p class="subtitle">Acesse sua conta para continuar.</p>
 
         <form id="loginForm" class="form" novalidate>
@@ -47,7 +47,7 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.2 3.6-7 8-7s8 2.8 8 7"/></svg>
               <span class="sr-only">Usuário ou e-mail</span>
             </label>
-            <input id="usuario" name="usuario" type="text" placeholder="E-mail corporativo" autocomplete="username" required>
+            <input id="usuario" name="usuario" type="text" placeholder="RE ou usuário" autocomplete="username" required>
           </div>
 
           <div class="field">
@@ -80,6 +80,9 @@
           </button>
         </form>
 
+        <p class="signup-link">Ainda não tem acesso? <a class="link" href="/src/pages/cadastro.html">Solicitar acesso</a></p>
+        <button type="button" class="about-trigger" id="openAbout"><span aria-hidden="true">ⓘ</span> Sobre o projeto</button>
+
         <footer class="note">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
           <span>Acesso restrito</span>
@@ -92,6 +95,31 @@
 
   </main>
 
+  <div class="about-modal" id="aboutModal" aria-hidden="true">
+    <div class="about-modal__backdrop" data-close-about></div>
+    <section class="about-dialog" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" tabindex="-1">
+      <header class="about-dialog__header"><div><span class="about-eyebrow">CONHEÇA O PROJETO</span><h2 id="aboutTitle">Sobre o projeto</h2></div><button type="button" class="about-close" id="closeAbout" aria-label="Fechar">×</button></header>
+      <div class="about-dialog__content">
+        <section class="about-section"><span class="about-section__number">01</span><div><h3>Identificação</h3><dl class="about-data">
+          <div><dt>Nome do projeto</dt><dd>SGD - Sistema de Gerenciamento de Dispositivos</dd></div><div><dt>Curso</dt><dd>Desenvolvimento de Software Multiplataforma</dd></div>
+          <div><dt>Instituição</dt><dd>Fatec Matão</dd></div><div><dt>Parceria</dt><dd>Baldan</dd></div>
+        </dl></div></section>
+        <section class="about-section"><span class="about-section__number">02</span><div><h3>Contexto</h3><p>Os dispositivos da empresa precisam de laudos para registros de liberação, manutenção (preventiva) e conserto (corretiva). Porém, atualmente, o preenchimento desses laudos é realizado manualmente em papel, o que torna o processo menos prático e demorado, diminuindo a eficiência na empresa.</p></div></section>
+        <section class="about-section"><span class="about-section__number">03</span><div><h3>Objetivos</h3><ul><li>Autenticação de usuários e recuperação controlada de acesso.</li><li>Perfis e permissões iniciais: operador, responsável, gestão e administrador.</li><li>Cadastro e consulta de dispositivos.</li><li>Abertura, preenchimento, salvamento e finalização de laudos.</li><li>Laudos de liberação, manutenção corretiva e manutenção preventiva.</li><li>Controle inicial do número de laudos em andamento.</li><li>Listagem e filtros básicos por dispositivo, tipo, responsável, situação e período.</li>
+        <li>Registro de data, hora, usuário e mudança de status.</li>
+        <li>Exportação ou visualização do laudo para conferência.</li></ul></div></section>
+        <section class="about-section"><span class="about-section__number">04</span><div><h3>Equipe</h3><div class="about-people"><div><h4>Desenvolvedores</h4><p>Gabriel Melitto</p><p>Caio Bononi</p>
+        <p>Thiago Marcelino</p>
+        <p>Ryan Gonçalves</p>
+        <p>Caio Fonseca</p>
+        <p>Leandro Ferreira</p></div><div><h4>Orientador(a)</h4><p>Douglas Ribeiro</p></div></div></div></section>
+        <section class="about-section"><span class="about-section__number">05</span><div><h3>Envolvidos</h3><p class="about-section__hint">Representantes e colaboradores da empresa parceira</p><ul><li>Carolina Beil</li><li>Vinicius Urbano</li><li>Ingrid Lara</li><li>Gabriela</li>
+        <li>Rodrigo Vidrich</li>
+        </ul></div></section>
+      </div>
+      <footer class="about-dialog__footer"><span>SGD • Sistema de Gestão de Dispositivos</span><button type="button" class="about-done" data-close-about>Fechar</button></footer>
+    </section>
+  </div>
   <script src="/src/services/auth.js"></script>
   <script src="/src/js/script.js"></script>
 </body>

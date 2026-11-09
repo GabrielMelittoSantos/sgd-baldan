@@ -31,12 +31,12 @@
   function shell(active) {
     document.getElementById('side').innerHTML =
       '<nav>' + NAV.map(([id,t,i]) => `<a class="nav${id===active?' on':''}" href="${['inicio','dispositivos','gestao-adm'].includes(id)?id+'.html':'#'}">${ic(i)}<span>${t}</span></a>`).join('') + '</nav>' +
-      '<div class="logo"><span class="logo__mark">»</span> BALDAN<small>Ferramentaria</small></div>';
+      '<div class="logo"><span class="boxLogo"><img class="logo__mark" src="../assests/image/LogoBaldan.png" alt=""/> BALDAN</span><small>Ferramentaria</small></div>';
     const u = Auth.sessao(), ini = u.nome.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase();
     document.getElementById('top').innerHTML =
       '<span class="sgd"><img src="/src/assests/image/LogoBaldan.png" alt="Logo"> SGD</span><span class="desc">Sistema de Gestão de Dispositivos</span><span class="sp"></span>' +
       `<button class="bell" aria-label="Notificações">${ic('bell')}<b>3</b></button>` +
-      `<div class="user"><span class="av">${esc(ini)}</span><div class="user__info">${esc(u.nome)}<small>${esc(u.setor)}</small></div>` +
+      `<div class="user"><span class="av">${esc(ini)}</span><div class="user__info">${esc(u.nome)}</div>` +
       `<button class="btn-icon" id="sair" aria-label="Sair">${ic('out')}</button></div>`;
     document.getElementById('sair').onclick = () => Auth.sair();
   }
@@ -45,7 +45,7 @@
 
   /* Campos simples do formulário (ignora linhas dinâmicas dentro de [data-rows]) */
   const simple = (f) => { const o = {}; [...f.elements].forEach((e) => { if (!e.name || e.closest('[data-rows]')) return; if (e.type === 'radio') { if (e.checked) o[e.name] = e.value; } else if (e.type !== 'file') o[e.name] = e.value; }); return o; };
-  const fill = (f, o) => Object.entries(o || {}).forEach(([k, v]) => { const e = f.elements[k]; if (e && typeof v === 'string') e.value = v; });
+  const fill = (f, o) => Object.entries(o || {}).forEach(([k, v]) => { const e = f.elements[k]; if (e && typeof v === 'string') { if (e.tagName === 'SELECT' && v && ![...e.options].some((o) => o.value === v)) e.add(new Option(v, v)); e.value = v; } });
   const aviso = (f, msg) => f.insertAdjacentHTML('afterbegin', `<div class="banner" role="status">${esc(msg)}</div>`);
   const bloquear = (f, msg) => { aviso(f, msg); f.querySelectorAll('input,select,textarea,button').forEach((e) => (e.disabled = true)); };
 

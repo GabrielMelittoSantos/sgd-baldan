@@ -4,7 +4,15 @@
 .big__card--corretivo  { --c: var(--red); }
 .big__card--preventivo { --c: var(--blue); }
 .big__card--liberacao  { --c: var(--green); }
-.big__icon { width: 56px; height: 56px; border-radius: var(--radius); background: var(--c); display: grid; place-items: center; align-self: start; }
+.big__icon { display: inline-block; width: 56px; height: 56px; border-radius: var(--radius); background: var(--c); display: grid; place-items: center; align-self: start; }
+
+  
+/* Isso força o SVG injetado a preencher o espaço do span */
+.big__icon svg {
+width: 32px !important;
+height: 32px !important;
+display: block;
+}
 .big__card h2 { font-size: 1.7rem; text-transform: uppercase; }
 .big__card p { color: #d5deea; }
 .big__count { display: flex; gap: .8rem; align-items: center; background: rgba(0,0,0,.35); border-radius: var(--radius); padding: .8rem 1rem; }
